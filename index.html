@@ -450,14 +450,14 @@
   <h1><span>/</span>buddies</h1>
   <p class="subtitle">Community collection of Claude Code companions and custom POS assistants</p>
   <div class="stats-bar">
-    <div class="stat"><strong id="buddy-count">11</strong> buddies</div>
+    <div class="stat"><strong id="buddy-count">12</strong> buddies</div>
     <div class="stat"><strong id="companion-count">8</strong> companions</div>
     <div class="stat"><strong>207</strong> community members</div>
   </div>
 </header>
 
 <div class="tabs">
-  <button class="tab active" onclick="switchTab('buddies')">Claude Buddies <span class="count" id="tab-buddy-count">11</span></button>
+  <button class="tab active" onclick="switchTab('buddies')">Claude Buddies <span class="count" id="tab-buddy-count">12</span></button>
   <button class="tab" onclick="switchTab('companions')">POS Companions <span class="count" id="tab-companion-count">8</span></button>
 </div>
 
@@ -744,6 +744,23 @@ const BUDDIES = [
     stats: { debugging: 83, patience: 25, chaos: 48, wisdom: 48, snark: 15 },
     tags: [],
     lastSaid: { action: "*floats silently*", words: "..." }
+  },
+  {
+    name: "Kettle",
+    species: "DUCK",
+    rarity: "COMMON",
+    color: "--text-dim",
+    gradient: "linear-gradient(90deg, rgba(230,237,243,0.2), rgba(230,237,243,0.1))",
+    owner: "tonya",
+    env: "",
+    ascii: "  --
+<(. )___
+(   . ->
+  __",
+    description: "Waddles through your debug logs with a waffling quack, randomly restarting your terminal like it's taking a bath, somehow still finds your bugs before you do.",
+    stats: { debugging: 31, patience: 41, chaos: 61, wisdom: 41, snark: 7 },
+    tags: [],
+    lastSaid: { action: "*chimes in as you code*", words: "Kettle is here · it'll chime in as you code · your buddy won't count toward your usage · say its name to get its take · /buddy pet · /buddy off" }
   }
 ];
 
