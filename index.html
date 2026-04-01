@@ -450,14 +450,14 @@
   <h1><span>/</span>buddies</h1>
   <p class="subtitle">Community collection of Claude Code companions and custom POS assistants</p>
   <div class="stats-bar">
-    <div class="stat"><strong id="buddy-count">14</strong> buddies</div>
+    <div class="stat"><strong id="buddy-count">15</strong> buddies</div>
     <div class="stat"><strong id="companion-count">8</strong> companions</div>
     <div class="stat"><strong>207</strong> community members</div>
   </div>
 </header>
 
 <div class="tabs">
-  <button class="tab active" onclick="switchTab('buddies')">Claude Buddies <span class="count" id="tab-buddy-count">14</span></button>
+  <button class="tab active" onclick="switchTab('buddies')">Claude Buddies <span class="count" id="tab-buddy-count">15</span></button>
   <button class="tab" onclick="switchTab('companions')">POS Companions <span class="count" id="tab-companion-count">8</span></button>
 </div>
 
@@ -732,6 +732,20 @@ const BUDDIES = [
     stats: { debugging: 1, patience: 13, chaos: 65, wisdom: 3, snark: 35 },
     tags: [],
     lastSaid: { action: "*...*", words: "..." }
+  },
+  {
+    name: "Brindle",
+    species: "CHONK",
+    rarity: "UNCOMMON",
+    color: "--accent-teal",
+    gradient: "linear-gradient(90deg, var(--accent-teal), var(--accent-green))",
+    owner: "@ilyafilim",
+    env: "",
+    ascii: "[___]\n/\\ ° ° /\\\n( ° ° )\n( .. )\n\\______/",
+    description: "A calm, methodical presence who waddles through your debug sessions with genuine patience, occasionally humming an odd little song while watching you squint at stack traces.",
+    stats: { debugging: 38, patience: 65, chaos: 17, wisdom: 37, snark: 24 },
+    tags: [],
+    lastSaid: { action: "*hums softly while waddling closer to the screen*", words: "Oh, skillset-lab! Upgrading your models AND fixing persistence. Patient work." }
   }
 ];
 
