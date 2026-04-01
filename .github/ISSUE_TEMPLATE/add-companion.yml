@@ -1,0 +1,24 @@
+name: Add Companion
+description: Upload a /buddy screenshot to add your companion to the collection
+title: "[companion] "
+labels: ["companion-submission"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Upload your `/buddy` screenshot — AI will extract the data and add your companion automatically.
+  - type: input
+    id: owner
+    attributes:
+      label: Your name or @telegram
+      placeholder: "@username"
+    validations:
+      required: true
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Screenshot
+      description: Paste or drag your /buddy screenshot here
+      placeholder: Drag and drop your screenshot
+    validations:
+      required: true

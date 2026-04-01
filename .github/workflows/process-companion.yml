@@ -1,0 +1,233 @@
+name: Process Companion Submission
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  process:
+    if: contains(github.event.issue.labels.*.name, 'companion-submission')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract image URL from issue
+        id: extract
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = context.payload.issue.body;
+            // Find image URLs in markdown
+            const imgRegex = /!\[.*?\]\((.*?)\)/g;
+            const urlRegex = /(https:\/\/.*?\.(?:png|jpg|jpeg|gif|webp))/gi;
+            let imageUrl = null;
+
+            let match = imgRegex.exec(body);
+            if (match) imageUrl = match[1];
+            if (!imageUrl) {
+              match = urlRegex.exec(body);
+              if (match) imageUrl = match[0];
+            }
+
+            // Extract owner from form
+            const ownerMatch = body.match(/Your name or @telegram\s*\n\s*\n\s*(.*)/);
+            const owner = ownerMatch ? ownerMatch[1].trim() : 'anonymous';
+
+            if (!imageUrl) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: '⚠️ No screenshot found. Please edit the issue and add an image.'
+              });
+              core.setFailed('No image found');
+              return;
+            }
+
+            core.setOutput('image_url', imageUrl);
+            core.setOutput('owner', owner);
+            console.log(`Image: ${imageUrl}`);
+            console.log(`Owner: ${owner}`);
+
+      - name: Download image
+        if: steps.extract.outputs.image_url
+        run: |
+          curl -L -o /tmp/buddy-screenshot.png "${{ steps.extract.outputs.image_url }}"
+          ls -la /tmp/buddy-screenshot.png
+
+      - name: Extract buddy data via Vision API
+        if: steps.extract.outputs.image_url
+        id: vision
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          IMAGE_B64=$(base64 -w0 /tmp/buddy-screenshot.png 2>/dev/null || base64 -i /tmp/buddy-screenshot.png)
+
+          RESPONSE=$(curl -s https://openrouter.ai/api/v1/chat/completions \
+            -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "model": "anthropic/claude-sonnet-4",
+              "messages": [{
+                "role": "user",
+                "content": [
+                  {"type": "image_url", "image_url": {"url": "data:image/png;base64,'"$IMAGE_B64"'"}},
+                  {"type": "text", "text": "Extract the Claude Code /buddy companion card data from this screenshot. Return ONLY a valid JSON object (no markdown, no explanation) with these exact fields:\n{\"name\": \"...\", \"species\": \"...\", \"rarity\": \"COMMON|UNCOMMON|RARE|EPIC|LEGENDARY\", \"description\": \"...\", \"stats\": {\"debugging\": 0, \"patience\": 0, \"chaos\": 0, \"wisdom\": 0, \"snark\": 0}, \"lastSaid\": {\"action\": \"*...*\", \"words\": \"...\"}}\nIf you can see ASCII art, try to reproduce it as a simple multi-line string in an \"ascii\" field. If there is a last said / speech bubble section, include it. Return ONLY the JSON."}
+                ]
+              }]
+            }')
+
+          # Extract JSON from response
+          BUDDY_JSON=$(echo "$RESPONSE" | python3 -c "
+          import sys, json
+          data = json.load(sys.stdin)
+          content = data['choices'][0]['message']['content']
+          # Try to find JSON in content
+          import re
+          match = re.search(r'\{.*\}', content, re.DOTALL)
+          if match:
+              # Validate it's valid JSON
+              parsed = json.loads(match.group())
+              print(json.dumps(parsed))
+          else:
+              print(content)
+          " 2>/dev/null || echo '{}')
+
+          echo "BUDDY_DATA<<EOF" >> $GITHUB_OUTPUT
+          echo "$BUDDY_JSON" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          echo "Extracted: $BUDDY_JSON"
+
+      - name: Add buddy to site
+        if: steps.vision.outputs.BUDDY_DATA && steps.vision.outputs.BUDDY_DATA != '{}'
+        env:
+          BUDDY_DATA: ${{ steps.vision.outputs.BUDDY_DATA }}
+          OWNER: ${{ steps.extract.outputs.owner }}
+        run: |
+          python3 << 'PYEOF'
+          import json, os, re
+
+          buddy_data = json.loads(os.environ['BUDDY_DATA'])
+          owner = os.environ['OWNER']
+
+          name = buddy_data.get('name', 'Unknown')
+          species = buddy_data.get('species', 'UNKNOWN').upper()
+          rarity = buddy_data.get('rarity', 'COMMON').upper()
+          desc = buddy_data.get('description', 'A mysterious companion.').replace('"', '\\"')
+          stats = buddy_data.get('stats', {})
+          ascii_art = buddy_data.get('ascii', '  ?\n ?_?\n  ?').replace('\n', '\\n').replace('"', '\\"')
+          last_said = buddy_data.get('lastSaid', {'action': '', 'words': '...'})
+          action = last_said.get('action', '').replace('"', '\\"')
+          words = last_said.get('words', '...').replace('"', '\\"')
+
+          # Pick color based on rarity
+          colors = {
+              'COMMON': ('--text-dim', 'linear-gradient(90deg, rgba(230,237,243,0.2), rgba(230,237,243,0.1))'),
+              'UNCOMMON': ('--accent-teal', 'linear-gradient(90deg, var(--accent-teal), var(--accent-green))'),
+              'RARE': ('--accent-purple', 'linear-gradient(90deg, var(--accent-purple), var(--accent-blue))'),
+              'EPIC': ('--accent-amber', 'linear-gradient(90deg, var(--accent-amber), var(--accent-red))'),
+              'LEGENDARY': ('--accent-pink', 'linear-gradient(90deg, var(--accent-pink), var(--accent-purple))')
+          }
+          color, gradient = colors.get(rarity, colors['COMMON'])
+
+          new_entry = f'''  {{
+            name: "{name}",
+            species: "{species}",
+            rarity: "{rarity}",
+            color: "{color}",
+            gradient: "{gradient}",
+            owner: "{owner}",
+            env: "",
+            ascii: "{ascii_art}",
+            description: "{desc}",
+            stats: {{ debugging: {stats.get("debugging", 0)}, patience: {stats.get("patience", 0)}, chaos: {stats.get("chaos", 0)}, wisdom: {stats.get("wisdom", 0)}, snark: {stats.get("snark", 0)} }},
+            tags: [],
+            lastSaid: {{ action: "{action}", words: "{words}" }}
+          }}'''
+
+          # Read index.html
+          with open('index.html', 'r') as f:
+              html = f.read()
+
+          # Check for duplicate
+          if f'name: "{name}"' in html:
+              print(f"DUPLICATE: {name} already exists, skipping")
+              with open('/tmp/duplicate', 'w') as f:
+                  f.write(name)
+          else:
+              # Insert before the closing ]; of BUDDIES array
+              # Find the pattern: last entry closes with }, then ];
+              # We add our entry before the ];
+              pattern = r'(  \}\n\];\n\nconst COMPANIONS)'
+              replacement = f'  }},\n{new_entry}\n];\n\nconst COMPANIONS'
+              html_new = re.sub(pattern, replacement, html)
+
+              if html_new == html:
+                  # Fallback: try simpler pattern
+                  html_new = html.replace('\n];\n\nconst COMPANIONS', f',\n{new_entry}\n];\n\nconst COMPANIONS')
+
+              # Update buddy count
+              count_match = re.search(r'<strong id="buddy-count">(\d+)</strong>', html_new)
+              if count_match:
+                  old_count = int(count_match.group(1))
+                  html_new = html_new.replace(f'<strong id="buddy-count">{old_count}</strong>', f'<strong id="buddy-count">{old_count + 1}</strong>')
+                  html_new = html_new.replace(f'id="tab-buddy-count">{old_count}<', f'id="tab-buddy-count">{old_count + 1}<')
+
+              with open('index.html', 'w') as f:
+                  f.write(html_new)
+
+              print(f"ADDED: {name} ({species}, {rarity}) by {owner}")
+              with open('/tmp/added_name', 'w') as f:
+                  f.write(name)
+          PYEOF
+
+      - name: Commit and push
+        if: steps.vision.outputs.BUDDY_DATA && steps.vision.outputs.BUDDY_DATA != '{}'
+        run: |
+          if [ -f /tmp/duplicate ]; then
+            echo "Skipping commit — duplicate entry"
+            exit 0
+          fi
+
+          BUDDY_NAME=$(cat /tmp/added_name 2>/dev/null || echo "unknown")
+          git config user.name "companion-bot"
+          git config user.email "bot@aimindset.org"
+          git add index.html
+          git commit -m "add ${BUDDY_NAME} from community submission" || exit 0
+          git push
+
+      - name: Comment on issue
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let message;
+
+            if (fs.existsSync('/tmp/duplicate')) {
+              const name = fs.readFileSync('/tmp/duplicate', 'utf8');
+              message = `⚠️ **${name}** already exists in the collection. No duplicate added.`;
+            } else if (fs.existsSync('/tmp/added_name')) {
+              const name = fs.readFileSync('/tmp/added_name', 'utf8');
+              message = `✅ **${name}** has been added to the Terminal Menagerie!\n\nSee it live: https://ai-mindset-org.github.io/claude-buddies/`;
+            } else {
+              message = `⚠️ Could not extract buddy data from the screenshot. Please check the image quality or submit manually.`;
+            }
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: message
+            });
+
+            // Close issue
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              state: 'closed'
+            });
