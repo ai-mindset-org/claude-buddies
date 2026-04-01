@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    background: #0d1117;
+    color: #e6edf3;
+    font-family: 'JetBrains Mono', monospace;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+
+  /* Grid background */
+  body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(77,201,212,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(77,201,212,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* Vignette */
+  body::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(13,17,23,0.7) 100%);
+  }
+
+  .content { position: relative; z-index: 1; text-align: center; }
+
+  .brand {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #4dc9d4;
+    opacity: 0.6;
+    margin-bottom: 8px;
+  }
+
+  h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 52px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  h1 span { color: #4dc9d4; }
+
+  .subtitle {
+    font-size: 14px;
+    color: rgba(230,237,243,0.5);
+    margin-bottom: 40px;
+  }
+
+  .buddies {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    align-items: flex-end;
+  }
+
+  .buddy {
+    text-align: center;
+    opacity: 0.7;
+  }
+
+  .buddy pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 1.2;
+    color: rgba(230,237,243,0.45);
+    margin-bottom: 6px;
+  }
+
+  .buddy .name {
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(230,237,243,0.6);
+  }
+
+  .buddy .species {
+    font-size: 9px;
+    color: rgba(230,237,243,0.25);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .buddy:nth-child(1) pre { color: rgba(77,201,212,0.5); }
+  .buddy:nth-child(3) pre { color: rgba(188,140,255,0.5); }
+  .buddy:nth-child(5) pre { color: rgba(240,160,48,0.5); }
+  .buddy:nth-child(7) pre { color: rgba(63,185,80,0.5); }
+
+  .stats-bar {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    margin-top: 32px;
+    font-size: 12px;
+    color: rgba(230,237,243,0.3);
+  }
+  .stats-bar strong { color: rgba(230,237,243,0.5); }
+
+  .logo {
+    position: absolute;
+    bottom: 24px;
+    right: 32px;
+    opacity: 0.25;
+    z-index: 1;
+  }
+</style>
+</head>
+<body>
+
+<div class="content">
+  <div class="brand">AI Mindset {space}</div>
+  <h1><span>/</span>buddies</h1>
+  <div class="subtitle">community collection of Claude Code companions</div>
+
+  <div class="buddies">
+    <div class="buddy">
+      <pre>  .---.
+° \ (@ )
+ \___/
+  ~~~~~~</pre>
+      <div class="name">Pebble</div>
+      <div class="species">snail</div>
+    </div>
+
+    <div class="buddy">
+      <pre> /\_/\
+( @  @)
+( u  )
+(")_(")</pre>
+      <div class="name">Mottle</div>
+      <div class="species">cat</div>
+    </div>
+
+    <div class="buddy">
+      <pre>  .----.
+  (°>°)
+ |( ̄  )|
+ ~`----´~</pre>
+      <div class="name">Tremor</div>
+      <div class="species">penguin</div>
+    </div>
+
+    <div class="buddy">
+      <pre>   __
+ <(·)___
+  ( .->
+   `--´</pre>
+      <div class="name">Kettle</div>
+      <div class="species">duck</div>
+    </div>
+
+    <div class="buddy">
+      <pre>  [___]
+ n______n
+( ●   ● )
+(  oo   )
+ `------´</pre>
+      <div class="name">Motley</div>
+      <div class="species">capybara</div>
+    </div>
+
+    <div class="buddy">
+      <pre> /^\  /^\
+< +  + >
+(  ~~  )
+ `-vvvv-´</pre>
+      <div class="name">Griftax</div>
+      <div class="species">dragon</div>
+    </div>
+
+    <div class="buddy">
+      <pre>   ,>
+  .----.
+ / @  @ \
+ |      |
+ ~´~'~´~´~</pre>
+      <div class="name">Gravy</div>
+      <div class="species">ghost</div>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <span><strong>12</strong> buddies</span>
+    <span><strong>8</strong> companions</span>
+    <span><strong>18</strong> species</span>
+  </div>
+</div>
+
+<div class="logo">
+  <img src="assets/logo-white.png" alt="" style="height:20px; opacity:0.5">
+</div>
+
+</body></html>
