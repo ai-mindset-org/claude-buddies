@@ -494,14 +494,12 @@
     <!-- Parsed card preview -->
     <div id="parsed-card" style="max-width:360px; margin:20px auto; display:none"></div>
 
-    <!-- Submit to GitHub -->
+    <!-- One-click submit -->
     <div id="submit-section" style="display:none; text-align:center; margin-top:12px">
-      <a id="submit-link" href="#" target="_blank" style="display:inline-block; padding:10px 24px; background:rgba(77,201,212,0.15); border:1px solid var(--accent-teal); color:var(--accent-teal); border-radius:6px; font-family:inherit; font-size:12px; text-decoration:none; transition:all 0.2s">
-        submit to collection
-      </a>
-      <div style="font-size:10px; color:var(--text-muted); margin-top:8px">
-        opens GitHub Issue — AI will add it automatically
-      </div>
+      <button id="submit-btn" style="padding:10px 32px; background:rgba(59,185,80,0.15); border:1px solid var(--accent-green); color:var(--accent-green); border-radius:6px; font-family:inherit; font-size:13px; cursor:pointer; transition:all 0.2s">
+        add to collection
+      </button>
+      <div id="submit-status" style="font-size:11px; color:var(--text-muted); margin-top:8px"></div>
     </div>
   </div>
 </div>
@@ -973,7 +971,7 @@ function copyTemplate(type) {
 }
 
 // ═══════════════════════════════════════════
-// UPLOAD → VISION API → CARD PREVIEW
+// UPLOAD → RESIZE → VISION API → PREVIEW → AUTO-COMMIT
 // ═══════════════════════════════════════════
 
 const uploadZone = document.getElementById('upload-zone');
@@ -983,7 +981,6 @@ const uploadLabel = document.getElementById('upload-label');
 const uploadStatus = document.getElementById('upload-status');
 const parsedCard = document.getElementById('parsed-card');
 const submitSection = document.getElementById('submit-section');
-const submitLink = document.getElementById('submit-link');
 const ownerInput = document.getElementById('f-owner');
 
 uploadZone.addEventListener('click', () => fileInput.click());
@@ -996,65 +993,113 @@ uploadZone.addEventListener('drop', e => {
 });
 fileInput.addEventListener('change', e => { if (e.target.files[0]) processFile(e.target.files[0]); });
 
-async function processFile(file) {
-  // Show preview
-  const reader = new FileReader();
-  reader.onload = async (e) => {
-    const dataUrl = e.target.result;
-    uploadPreview.src = dataUrl;
-    uploadPreview.style.display = 'block';
-    uploadLabel.style.display = 'none';
-    uploadStatus.style.display = 'block';
-    uploadStatus.textContent = 'extracting data...';
-    uploadStatus.style.color = 'var(--accent-teal)';
-
-    try {
-      const res = await fetch('/.netlify/functions/parse-buddy', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image: dataUrl })
-      });
-
-      if (!res.ok) throw new Error('API error');
-      const buddy = await res.json();
-
-      if (!buddy.name) throw new Error('Could not parse');
-
-      uploadStatus.textContent = buddy.name + ' (' + buddy.species + ', ' + buddy.rarity + ')';
-      uploadStatus.style.color = 'var(--accent-green)';
-
-      // Render preview card
-      const card = {
-        ...buddy,
-        color: '--accent-teal',
-        gradient: 'linear-gradient(90deg, var(--accent-teal), var(--accent-green))',
-        owner: ownerInput.value || 'anonymous',
-        env: '',
-        ascii: buddy.ascii || '?',
-        tags: [],
-        lastSaid: buddy.lastSaid || { action: '', words: '...' }
-      };
-      parsedCard.innerHTML = renderBuddyCard(card, 0);
-      parsedCard.style.display = 'block';
-      setTimeout(() => parsedCard.querySelector('.card')?.classList.add('visible'), 50);
-
-      // Show submit link
-      const owner = ownerInput.value || 'anonymous';
-      const title = encodeURIComponent('[companion] ' + buddy.name + ' from ' + owner);
-      const body = encodeURIComponent('**Owner:** ' + owner + '\\n**Name:** ' + buddy.name + '\\n**Species:** ' + buddy.species + '\\n**Rarity:** ' + buddy.rarity + '\\n\\n```json\\n' + JSON.stringify(buddy, null, 2) + '\\n```');
-      submitLink.href = 'https://github.com/ai-mindset-org/claude-buddies/issues/new?labels=companion-submission&title=' + title + '&body=' + body;
-      submitSection.style.display = 'block';
-
-      window._parsedBuddy = buddy;
-
-    } catch (err) {
-      uploadStatus.textContent = 'could not parse — try a clearer screenshot';
-      uploadStatus.style.color = 'var(--accent-red)';
-      console.error(err);
-    }
-  };
-  reader.readAsDataURL(file);
+// Resize image to fit within Netlify function limit
+function resizeImage(file, maxWidth = 800) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const scale = Math.min(1, maxWidth / img.width);
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      resolve(canvas.toDataURL('image/jpeg', 0.85));
+    };
+    img.src = URL.createObjectURL(file);
+  });
 }
+
+async function processFile(file) {
+  uploadPreview.style.display = 'none';
+  uploadLabel.style.display = 'none';
+  uploadStatus.style.display = 'block';
+  uploadStatus.textContent = 'resizing...';
+  uploadStatus.style.color = 'var(--accent-teal)';
+
+  const dataUrl = await resizeImage(file);
+  uploadPreview.src = dataUrl;
+  uploadPreview.style.display = 'block';
+  uploadStatus.textContent = 'extracting data with AI...';
+
+  try {
+    const res = await fetch('/.netlify/functions/parse-buddy', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image: dataUrl })
+    });
+
+    const buddy = await res.json();
+    if (buddy.error || !buddy.name) throw new Error(buddy.error || 'Could not parse');
+
+    uploadStatus.textContent = buddy.name + ' (' + buddy.species + ', ' + buddy.rarity + ')';
+    uploadStatus.style.color = 'var(--accent-green)';
+
+    // Render preview card
+    const card = {
+      ...buddy,
+      color: '--accent-teal',
+      gradient: 'linear-gradient(90deg, var(--accent-teal), var(--accent-green))',
+      owner: ownerInput.value || 'anonymous',
+      env: '',
+      ascii: buddy.ascii || '?',
+      tags: [],
+      lastSaid: buddy.lastSaid || { action: '', words: '...' }
+    };
+    parsedCard.innerHTML = renderBuddyCard(card, 0);
+    parsedCard.style.display = 'block';
+    setTimeout(() => parsedCard.querySelector('.card')?.classList.add('visible'), 50);
+
+    submitSection.style.display = 'block';
+    window._parsedBuddy = buddy;
+    window._parsedImage = dataUrl;
+
+  } catch (err) {
+    uploadStatus.textContent = 'could not parse — try a clearer screenshot';
+    uploadStatus.style.color = 'var(--accent-red)';
+    console.error(err);
+  }
+}
+
+// One-click submit — auto-commit to GitHub
+document.getElementById('submit-btn')?.addEventListener('click', async () => {
+  const btn = document.getElementById('submit-btn');
+  const status = document.getElementById('submit-status');
+  const buddy = window._parsedBuddy;
+  const image = window._parsedImage;
+  if (!buddy || !image) return;
+
+  btn.disabled = true;
+  btn.textContent = 'submitting...';
+  status.textContent = '';
+
+  try {
+    const res = await fetch('/.netlify/functions/parse-buddy', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image, owner: ownerInput.value || 'anonymous', action: 'submit' })
+    });
+
+    const result = await res.json();
+
+    if (result.committed) {
+      btn.textContent = 'added!';
+      btn.style.borderColor = 'var(--accent-green)';
+      status.textContent = result.name + ' is now in the collection. Refresh to see it.';
+      status.style.color = 'var(--accent-green)';
+    } else if (result.reason === 'duplicate') {
+      btn.textContent = 'already exists';
+      status.textContent = result.name + ' is already in the collection.';
+      status.style.color = 'var(--accent-amber)';
+    } else {
+      throw new Error(result.reason || 'Unknown error');
+    }
+  } catch (err) {
+    btn.textContent = 'error — try again';
+    status.textContent = err.message;
+    status.style.color = 'var(--accent-red)';
+    btn.disabled = false;
+  }
+});
 </script>
 
 </body>
