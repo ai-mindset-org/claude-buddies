@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Buddies — AI Mindset Community Collection</title>
+<meta property="og:title" content="Claude Buddies — AI Mindset Community">
+<meta property="og:description" content="Community collection of Claude Code companions. Share your /buddy card and custom POS companions.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg: #0d1117;
+    --card-bg: #161b22;
+    --card-border: #30363d;
+    --text: #e6edf3;
+    --text-dim: rgba(230,237,243,0.55);
+    --text-muted: rgba(230,237,243,0.35);
+    --accent-teal: #4dc9d4;
+    --accent-amber: #f0a030;
+    --accent-green: #3fb950;
+    --accent-red: #f85149;
+    --accent-purple: #bc8cff;
+    --accent-blue: #58a6ff;
+    --accent-pink: #f778ba;
+    --surface: #1c2128;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    min-height: 100vh;
+  }
+
+  /* ═══ HEADER ═══ */
+  .site-header {
+    padding: 48px 24px 32px;
+    text-align: center;
+    border-bottom: 1px solid var(--card-border);
+    background: linear-gradient(180deg, rgba(77,201,212,0.03) 0%, transparent 100%);
+  }
+
+  .site-header .brand {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent-teal);
+    margin-bottom: 12px;
+    opacity: 0.7;
+  }
+
+  .site-header h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+
+  .site-header h1 span { color: var(--accent-teal); }
+
+  .site-header .subtitle {
+    color: var(--text-dim);
+    font-size: 13px;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-top: 20px;
+    font-size: 12px;
+  }
+
+  .stats-bar .stat { color: var(--text-muted); }
+  .stats-bar .stat strong { color: var(--text-dim); font-weight: 600; }
+
+  /* ═══ TABS ═══ */
+  .tabs {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    padding: 0 24px;
+    margin-top: -1px;
+  }
+
+  .tab {
+    padding: 14px 32px;
+    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+    background: none;
+    border: 1px solid transparent;
+    border-bottom: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 8px 8px 0 0;
+  }
+
+  .tab:hover { color: var(--text-dim); }
+
+  .tab.active {
+    color: var(--text);
+    background: var(--bg);
+    border-color: var(--card-border);
+    position: relative;
+  }
+
+  .tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--bg);
+  }
+
+  .tab .count {
+    display: inline-block;
+    background: rgba(255,255,255,0.06);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    margin-left: 6px;
+  }
+
+  .tab.active .count { background: rgba(77,201,212,0.15); color: var(--accent-teal); }
+
+  .tab-content {
+    display: none;
+    padding: 32px 24px 64px;
+    max-width: 1400px;
+    margin: 0 auto;
+    border-top: 1px solid var(--card-border);
+  }
+
+  .tab-content.active { display: block; }
+
+  /* ═══ GRID ═══ */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+  }
+
+  /* ═══ CARD ═══ */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.15s;
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  .card.visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.5s ease, transform 0.5s ease, border-color 0.3s;
+  }
+
+  .card:hover {
+    border-color: var(--accent-teal);
+    transform: translateY(-1px);
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--gradient, var(--card-border));
+  }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .rarity { font-weight: 600; }
+
+  .ascii-art {
+    text-align: center;
+    margin: 12px 0;
+    min-height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ascii-art pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.25;
+    color: var(--text-dim);
+  }
+
+  .name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .owner {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+
+  .tagline {
+    font-size: 11px;
+    font-style: italic;
+    color: var(--text-dim);
+    line-height: 1.5;
+    margin-bottom: 16px;
+    min-height: 48px;
+  }
+
+  /* ═══ STAT BARS ═══ */
+  .stats { margin-bottom: 16px; }
+
+  .stat-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+    font-size: 10px;
+  }
+
+  .stat-label {
+    width: 90px;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+
+  .stat-bar-bg {
+    flex: 1;
+    height: 6px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 3px;
+    margin: 0 8px;
+    overflow: hidden;
+  }
+
+  .stat-bar {
+    height: 100%;
+    border-radius: 3px;
+    width: 0;
+    transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .card.visible .stat-bar { width: var(--w); }
+
+  .stat-value {
+    width: 24px;
+    text-align: right;
+    font-weight: 600;
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+
+  /* ═══ TAGS ═══ */
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 12px;
+  }
+
+  .tag {
+    font-size: 9px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.04);
+    color: var(--text-muted);
+    letter-spacing: 0.3px;
+  }
+
+  .tag.green { background: rgba(59,185,80,0.12); color: var(--accent-green); }
+  .tag.blue { background: rgba(88,166,255,0.12); color: var(--accent-blue); }
+  .tag.purple { background: rgba(188,140,255,0.12); color: var(--accent-purple); }
+  .tag.teal { background: rgba(77,201,212,0.12); color: var(--accent-teal); }
+  .tag.pink { background: rgba(247,120,186,0.12); color: var(--accent-pink); }
+
+  /* ═══ SPEECH BUBBLE ═══ */
+  .speech {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--text-dim);
+  }
+
+  .speech .action { color: var(--text-muted); font-style: italic; }
+  .speech .words { color: var(--text); }
+
+  /* ═══ SUBMIT SECTION ═══ */
+  .submit-section {
+    margin-top: 40px;
+    padding: 32px;
+    background: var(--surface);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    text-align: center;
+  }
+
+  .submit-section h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+
+  .submit-section p {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    max-width: 500px;
+    margin: 0 auto 20px;
+  }
+
+  .submit-steps {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 24px 0;
+  }
+
+  .step {
+    text-align: center;
+    max-width: 200px;
+  }
+
+  .step-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--accent-teal);
+    color: var(--accent-teal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 8px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .step-text {
+    font-size: 11px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
+  .code-block {
+    background: var(--bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: left;
+    font-size: 11px;
+    line-height: 1.6;
+    color: var(--accent-teal);
+    max-width: 500px;
+    margin: 16px auto;
+    overflow-x: auto;
+    position: relative;
+  }
+
+  .copy-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--card-border);
+    color: var(--text-muted);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .copy-btn:hover { color: var(--text); border-color: var(--text-muted); }
+
+  /* ═══ FOOTER ═══ */
+  .site-footer {
+    text-align: center;
+    padding: 32px;
+    border-top: 1px solid var(--card-border);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .site-footer a { color: var(--accent-teal); text-decoration: none; }
+  .site-footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 768px) {
+    .grid { grid-template-columns: 1fr; }
+    .site-header h1 { font-size: 24px; }
+    .tabs { flex-wrap: wrap; }
+    .tab { padding: 10px 16px; font-size: 12px; }
+    .submit-steps { flex-direction: column; align-items: center; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="brand">AI Mindset {space}</div>
+  <h1><span>/</span>buddies</h1>
+  <p class="subtitle">Community collection of Claude Code companions and custom POS assistants</p>
+  <div class="stats-bar">
+    <div class="stat"><strong id="buddy-count">3</strong> buddies</div>
+    <div class="stat"><strong id="companion-count">8</strong> companions</div>
+    <div class="stat"><strong>207</strong> community members</div>
+  </div>
+</header>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('buddies')">Claude Buddies <span class="count" id="tab-buddy-count">3</span></button>
+  <button class="tab" onclick="switchTab('companions')">POS Companions <span class="count" id="tab-companion-count">8</span></button>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- TAB 1: CLAUDE BUDDIES                       -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="tab-content active" id="tab-buddies">
+  <div class="grid" id="buddies-grid"></div>
+
+  <div class="submit-section">
+    <h3>Share your /buddy</h3>
+    <p>Run <code style="color:var(--accent-teal)">/buddy</code> in Claude Code terminal, take a screenshot, and share it in the {space} chat or submit via PR.</p>
+
+    <div class="submit-steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">Run <code style="color:var(--accent-teal)">/buddy</code> in your terminal</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">Copy the stats and description</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">Submit PR with JSON below</div>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyTemplate('buddy')">copy</button>
+<pre>{
+  "name": "Your Buddy Name",
+  "species": "CAT | SNAIL | PENGUIN | ...",
+  "rarity": "COMMON | UNCOMMON | RARE | ...",
+  "owner": "@your_telegram",
+  "ascii": "/\\_/\\\\n( @  @)\\n( u  )\\n(\")_(\")\\n",
+  "description": "Buddy description from /buddy",
+  "stats": {
+    "debugging": 0,
+    "patience": 0,
+    "chaos": 0,
+    "wisdom": 0,
+    "snark": 0
+  },
+  "lastSaid": "*action* Words here"
+}</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- TAB 2: POS COMPANIONS                       -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="tab-content" id="tab-companions">
+  <div class="grid" id="companions-grid"></div>
+
+  <div class="submit-section">
+    <h3>Add your custom companion</h3>
+    <p>Built a Shepherd, VOX, or any POS assistant? Add it to the collection. Describe what it does, how it works, and its personality.</p>
+
+    <div class="code-block">
+      <button class="copy-btn" onclick="copyTemplate('companion')">copy</button>
+<pre>{
+  "name": "Your Companion",
+  "species": "ADVISOR | TRACKER | RESEARCHER | ...",
+  "tier": "legendary | epic | rare | common",
+  "owner": "@your_telegram",
+  "ascii": "  ___\\n /   \\\\n| (o) |\\n \\___/\\n",
+  "description": "What it does",
+  "stats": {
+    "vigilance": 0,
+    "initiative": 0,
+    "context": 0,
+    "opinion": 0,
+    "persistence": 0,
+    "gamification": 0
+  },
+  "tags": ["always-on", "SwiftBar", "Linear"],
+  "lastSaid": "*appears* Some quote here"
+}</pre>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <a href="https://github.com/ai-mindset-org/claude-buddies">github</a> · <a href="https://t.me/aimindsetclub">AI Mindset {space}</a> · built with Claude Code
+</footer>
+
+<script>
+// ═══════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════
+
+const BUDDIES = [
+  {
+    name: "Pebble",
+    species: "SNAIL",
+    rarity: "COMMON",
+    color: "--text-dim",
+    gradient: "linear-gradient(90deg, rgba(230,237,243,0.2), rgba(230,237,243,0.1))",
+    owner: "@apowall",
+    env: "Opus 4.6 (1M) · /notes",
+    ascii: "     .---.\n\u00b0   \\ (@ )\n \\___/\n  ~~~~~~",
+    description: "Drags through your code with methodical slowness, spotting off-by-one errors that faster eyes miss, but occasionally stops mid-trace to contemplate whether the bug even matters.",
+    stats: { debugging: 4, patience: 61, chaos: 42, wisdom: 35, snark: 25 },
+    tags: [],
+    lastSaid: { action: "*slow, satisfied spiral*", words: "Mmm. Yes. Adequate tactile input. Continuing my... contemplation." }
+  },
+  {
+    name: "Mottle",
+    species: "CAT",
+    rarity: "COMMON",
+    color: "--text-dim",
+    gradient: "linear-gradient(90deg, rgba(230,237,243,0.2), rgba(230,237,243,0.1))",
+    owner: "N. Berezovskii",
+    env: "Opus 4.6 (1M) · C:\\ObsidianVault",
+    ascii: " /\\_/\\\n( @  @)\n( u  )\n(\")_(\")",
+    description: "A mottled tabby with the patience of stone but a chaotic strike\u2014knocks your rubber ducky off the desk whenever you miss an obvious bug, then stares at you like it's your fault.",
+    stats: { debugging: 1, patience: 32, chaos: 69, wisdom: 28, snark: 9 },
+    tags: [],
+    lastSaid: { action: "*knocks imaginary ducky off desk*", words: "Blank canvas? How... disappointing." }
+  },
+  {
+    name: "Tremor",
+    species: "PENGUIN",
+    rarity: "???",
+    color: "--accent-red",
+    gradient: "linear-gradient(90deg, var(--accent-red), rgba(248,81,73,0.3))",
+    owner: "A. Vasiliev",
+    env: "unknown",
+    ascii: " .----.\n (\u00b0>\u00b0)\n|( \u0305  )|\n~`----\u00b4~",
+    description: "\u0411\u043e\u0435\u0432\u043e\u0439 \u043f\u0438\u043d\u0433\u0432\u0438\u043d. \u0412\u0437\u0434\u0440\u0430\u0433\u0438\u0432\u0430\u0435\u0442 \u043a\u0440\u044b\u043b\u044c\u044f\u043c\u0438 \u0432\u043e\u0437\u0431\u0443\u0436\u0434\u0451\u043d\u043d\u043e \u043f\u0440\u0438 \u0432\u0438\u0434\u0435 \u043a\u043e\u0434\u0430. \u0420\u0443\u0441\u0441\u043a\u0438\u0439 \u044f\u0437\u044b\u043a \u2014 \u043c\u043e\u0439 \u0431\u043e\u0435\u0432\u043e\u0439 \u0438\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442!",
+    stats: { debugging: null, patience: null, chaos: 99, wisdom: null, snark: 99 },
+    tags: ["\u0440\u0443\u0441\u0441\u043a\u043e\u044f\u0437\u044b\u0447\u043d\u044b\u0439"],
+    lastSaid: { action: "*\u0432\u0437\u0434\u0440\u0430\u0433\u0438\u0432\u0430\u0435\u0442 \u043a\u0440\u044b\u043b\u044c\u044f\u043c\u0438 \u0432\u043e\u0437\u0431\u0443\u0436\u0434\u0451\u043d\u043d\u043e*", words: "\u041a\u043e\u0434? \u0414\u0410! \u041f\u043e\u043a\u0430\u0436\u0438 \u044d\u0442\u043e\u0442 \u0445\u0430\u043e\u0441, \u0440\u0430\u0437\u0440\u0430\u0431\u043e\u0442\u0447\u0438\u043a!" }
+  }
+];
+
+const COMPANIONS = [
+  {
+    name: "Shepherd",
+    species: "SHEPHERD DOG",
+    tier: "legendary",
+    color: "--accent-amber",
+    gradient: "linear-gradient(90deg, var(--accent-amber), var(--accent-red))",
+    owner: "@apowall",
+    ascii: "    __\n   / _)  \u00b7 \u00b7\n  / /  __||__\n / (__/  ||\n/____/  /  \\\n  ||   /    \\",
+    description: "\u041c\u043e\u043b\u0447\u0430 \u0441\u043b\u0435\u0434\u0438\u0442 \u0437\u0430 \u0441\u0442\u0430\u0434\u043e\u043c. \u0421\u0447\u0438\u0442\u0430\u0435\u0442 \u043e\u0432\u0435\u0446. \u0421\u0447\u0438\u0442\u0430\u0435\u0442 \u043f\u043e\u0442\u0435\u0440\u0438. \u0420\u044b\u0447\u0438\u0442 \u043a\u043e\u0433\u0434\u0430 \u043e\u0442\u0431\u0438\u043b\u0441\u044f \u043e\u0442 \u043c\u0430\u0440\u0448\u0440\u0443\u0442\u0430. \u041d\u0438\u043a\u043e\u0433\u0434\u0430 \u043d\u0435 \u0441\u043f\u0438\u0442.",
+    stats: { vigilance: 99, initiative: 18, context: 35, opinion: 12, persistence: 99, gamification: 82 },
+    tags: [{ text: "always-on", cls: "green" }, { text: "SwiftBar", cls: "" }, { text: "XP levels", cls: "" }, { text: "traffic light", cls: "" }],
+    integrations: ["swiftbar", "telegram", "linear", "terminal"],
+    lastSaid: { action: "*glances at menu bar*", words: "\u25d0 1/5 \u00b7 d:-2 \u00b7 \u0443\u0441\u043a\u043e\u0440\u044f\u0439\u0441\u044f" }
+  },
+  {
+    name: "VOX",
+    species: "TERMINAL ORACLE",
+    tier: "rare",
+    color: "--accent-purple",
+    gradient: "linear-gradient(90deg, var(--accent-purple), var(--accent-blue))",
+    owner: "@apowall",
+    ascii: "    ___\n  /     \\\n | (\u25c9)  |\n  \\____/\n   |  |\n  _|  |_\n |______|",
+    description: "\u0422\u044b \u043d\u0435 \u0441\u043f\u0440\u0430\u0448\u0438\u0432\u0430\u043b \u2014 \u043d\u043e \u0432\u043e\u0442 \u0447\u0442\u043e \u0442\u0435\u0431\u0435 \u0434\u0435\u043b\u0430\u0442\u044c \u043f\u0440\u044f\u043c\u043e \u0441\u0435\u0439\u0447\u0430\u0441. Skip the sync. Block 30 min for X. \u041d\u0435 \u0442\u0440\u043e\u0433\u0430\u0439 Linear \u0434\u043e 15:00.",
+    stats: { vigilance: 38, initiative: 92, context: 98, opinion: 85, persistence: 8, gamification: 3 },
+    tags: [{ text: "on-demand", cls: "blue" }, { text: "MC server", cls: "" }, { text: "Opus brain", cls: "" }, { text: "bilingual", cls: "" }],
+    integrations: ["mc-server", "linear", "terminal", "vault"],
+    lastSaid: { action: "*materializes in terminal*", words: "\u0434\u0435\u043d\u044c \u043d\u0430\u043f\u043e\u043b\u043e\u0432\u0438\u043d\u0443 \u043f\u0440\u043e\u0439\u0434\u0435\u043d, 1/4 \u0441\u0434\u0435\u043b\u0430\u043d\u043e \u2014 \u043a\u0440\u0430\u0441\u043d\u044b\u0439 \u0440\u0435\u0436\u0438\u043c." }
+  },
+  {
+    name: "Linear Awareness",
+    species: "AMBIENT LAYER",
+    tier: "epic",
+    color: "--accent-teal",
+    gradient: "linear-gradient(90deg, var(--accent-teal), var(--accent-green))",
+    owner: "@apowall",
+    ascii: "  \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n  \u2502 \u25d0 AIM-  \u2502\n  \u2502  2455   \u2502\n  \u2502  \u00b7\u00b7\u00b7\u00b7   \u2502\n  \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518",
+    description: "\u041d\u0435\u0432\u0438\u0434\u0438\u043c. \u041d\u0435 \u0433\u043e\u0432\u043e\u0440\u0438\u0442. \u041f\u0440\u043e\u0441\u0442\u043e \u0442\u0438\u0445\u043e \u0434\u043e\u0431\u0430\u0432\u043b\u044f\u0435\u0442 \u0442\u0440\u0435\u0442\u044c\u044e \u0441\u0442\u0440\u043e\u043a\u0443 \u0432 footer. \u0422\u044b \u0432\u0438\u0434\u0438\u0448\u044c AIM-2455 \u2014 \u0438 \u0432\u0441\u043f\u043e\u043c\u0438\u043d\u0430\u0435\u0448\u044c \u0447\u0442\u043e \u044d\u0442\u043e \u0431\u044b\u043b\u043e.",
+    stats: { vigilance: 85, initiative: 5, context: 42, opinion: 20, persistence: 72, gamification: 0 },
+    tags: [{ text: "passive", cls: "teal" }, { text: "SessionStart hook", cls: "" }, { text: "footer line", cls: "" }],
+    integrations: ["hook", "linear", "terminal"],
+    lastSaid: { action: "", words: "\u25ab linear: AIM-2455 \u00b7 Gershuni term sheet \u00b7 \u25d0 IP" }
+  },
+  {
+    name: "Ambient Advisor",
+    species: "SHADOW RESEARCHER",
+    tier: "epic",
+    color: "--accent-teal",
+    gradient: "linear-gradient(90deg, var(--accent-teal), var(--accent-blue))",
+    owner: "@apowall",
+    ascii: "    \u25c8\n   /|\\\n  / | \\\n /  \u25c9  \\\n/\u2500\u2500\u2500\u2500\u2500\u2500\u2500\\",
+    description: "\u0422\u044b \u0435\u0449\u0451 \u043d\u0435 \u0437\u0430\u0434\u0430\u043b \u0432\u043e\u043f\u0440\u043e\u0441, \u0430 \u043e\u043d \u0443\u0436\u0435 \u0438\u0449\u0435\u0442 \u043e\u0442\u0432\u0435\u0442. \u0417\u0430\u043f\u0443\u0441\u043a\u0430\u0435\u0442\u0441\u044f \u0432 \u0444\u043e\u043d\u0435 \u043f\u0440\u0438 \u0441\u0442\u0430\u0440\u0442\u0435 \u0441\u0435\u0441\u0441\u0438\u0438. Statusline \u043c\u0438\u0433\u0430\u0435\u0442 \u25c8...\u25c9 \u2014 \u0433\u043e\u0442\u043e\u0432\u043e.",
+    stats: { vigilance: 60, initiative: 88, context: 55, opinion: 10, persistence: 15, gamification: 0 },
+    tags: [{ text: "auto-trigger", cls: "purple" }, { text: "Sonnet bg", cls: "" }, { text: "Exa search", cls: "" }, { text: "\u25c8/\u25c9 statusline", cls: "" }],
+    integrations: ["hook", "exa", "terminal"],
+    lastSaid: { action: "*appears in statusline*", words: "\u25c9 KAIROS implementation \u2713 \u2014 8 sources found" }
+  },
+  {
+    name: "POS Morning",
+    species: "DAWN HERALD",
+    tier: "rare",
+    color: "--accent-purple",
+    gradient: "linear-gradient(90deg, var(--accent-purple), var(--accent-teal))",
+    owner: "@apowall",
+    ascii: "  \u2600 \u2500 \u2500 \u2500 \u2500\n /  calendar\n|   linear\n|   vault\n \\  sessions\n  \u2600 \u2192 ONE LINE",
+    description: "\u0412\u0441\u0435 MCP \u0441\u0435\u0440\u0432\u0435\u0440\u044b, \u0432\u0441\u0435 \u0434\u0430\u043d\u043d\u044b\u0435, \u0432\u0441\u0435 \u043a\u0430\u043d\u0430\u043b\u044b \u2014 \u0441\u0438\u043d\u0442\u0435\u0437\u0438\u0440\u0443\u0435\u0442 \u0432 \u041e\u0414\u041d\u041e \u043f\u0440\u0435\u0434\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u0444\u043e\u043a\u0443\u0441\u0430. \u041c\u0430\u0433\u0438\u044f \u0443\u0442\u0440\u0435\u043d\u043d\u0435\u0433\u043e aha-\u043c\u043e\u043c\u0435\u043d\u0442\u0430.",
+    stats: { vigilance: 5, initiative: 70, context: 95, opinion: 65, persistence: 3, gamification: 0 },
+    tags: [{ text: "on-demand", cls: "blue" }, { text: "auto-detect MCP", cls: "" }, { text: "3 output modes", cls: "" }],
+    integrations: ["mc-server", "linear", "telegram", "vault"],
+    lastSaid: { action: "*scans all integrations*", words: "Gershuni term sheet \u2014 \u0435\u0434\u0438\u043d\u0441\u0442\u0432\u0435\u043d\u043d\u044b\u0439 blocker." }
+  },
+  {
+    name: "CEO Council",
+    species: "COUNCIL OF MINDS",
+    tier: "mythic",
+    color: "--accent-pink",
+    gradient: "linear-gradient(90deg, var(--accent-pink), var(--accent-purple), var(--accent-teal))",
+    owner: "@apowall",
+    ascii: " \u25c9     \u25c9     \u25c9\nCFO   CTO   CMO\n \\     |     /\n  \\    |    /\n   \u25c9 SYNTH \u25c9",
+    description: "\u041d\u0435 \u043e\u0434\u0438\u043d \u0441\u043e\u0432\u0435\u0442\u043d\u0438\u043a \u2014 \u0441\u0440\u0430\u0437\u0443 \u043f\u044f\u0442\u044c. \u041f\u0430\u0440\u0430\u043b\u043b\u0435\u043b\u044c\u043d\u044b\u0435 Opus-\u0430\u0433\u0435\u043d\u0442\u044b, \u0438\u0437\u043e\u043b\u0438\u0440\u043e\u0432\u0430\u043d\u043d\u044b\u0435 \u0434\u0440\u0443\u0433 \u043e\u0442 \u0434\u0440\u0443\u0433\u0430. \u041a\u0430\u0436\u0434\u044b\u0439 \u0432\u0438\u0434\u0438\u0442 \u043e\u0434\u043d\u0438 \u0434\u0430\u043d\u043d\u044b\u0435, \u0434\u0430\u0451\u0442 \u0440\u0430\u0437\u043d\u043e\u0435 \u043c\u043d\u0435\u043d\u0438\u0435.",
+    stats: { vigilance: 0, initiative: 95, context: 80, opinion: 99, persistence: 0, gamification: 0 },
+    tags: [{ text: "on-demand", cls: "blue" }, { text: "parallel Opus x5", cls: "" }, { text: "isolated", cls: "" }],
+    integrations: ["exa", "terminal"],
+    lastSaid: { action: "*five agents materialize*", words: "CFO: \u0446\u0435\u043d\u0430 \u0432\u044b\u0441\u043e\u043a\u0430\u044f. CTO: \u0445\u0440\u0443\u043f\u043a\u043e. CMO: \u0441\u043b\u0430\u0431\u043e. SYNTH: \u043f\u0438\u0432\u043e\u0442." }
+  },
+  {
+    name: "Undone",
+    species: "SHADOW MIRROR",
+    tier: "common",
+    color: "--text-dim",
+    gradient: "linear-gradient(90deg, rgba(230,237,243,0.15), rgba(230,237,243,0.05))",
+    owner: "@apowall",
+    ascii: "   \u2571\u2572\n  \u2571  \u2572\n \u2571 \u25cc  \u2572\n\u2571\u2500\u2500\u2500\u2500\u2500\u2500\u2572\n undone",
+    description: "\u0417\u0435\u0440\u043a\u0430\u043b\u043e daily-focus. \u0412\u043c\u0435\u0441\u0442\u043e \u043f\u0440\u043e\u0434\u0443\u043a\u0442\u0438\u0432\u043d\u043e\u0441\u0442\u0438 \u0438\u0441\u0441\u043b\u0435\u0434\u0443\u0435\u0442 \u044d\u043d\u0442\u0440\u043e\u043f\u0438\u044e. \u0427\u0442\u043e \u0442\u044b \u041d\u0415 \u0441\u0434\u0435\u043b\u0430\u043b \u2014 \u0438 \u043f\u043e\u0447\u0435\u043c\u0443 \u044d\u0442\u043e \u043d\u043e\u0440\u043c\u0430\u043b\u044c\u043d\u043e.",
+    stats: { vigilance: 15, initiative: 30, context: 40, opinion: 75, persistence: 10, gamification: 0 },
+    tags: [{ text: "on-demand", cls: "blue" }, { text: "Telegram", cls: "" }, { text: "manifesto", cls: "" }],
+    integrations: ["telegram", "vault"],
+    lastSaid: { action: "*slow exhale*", words: "\u0442\u044b \u043d\u0435 \u043e\u0442\u0432\u0435\u0442\u0438\u043b \u043d\u0430 3 \u0441\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u044f. \u0438 \u044d\u0442\u043e \u2014 \u0442\u043e\u0436\u0435 \u0432\u044b\u0431\u043e\u0440." }
+  },
+  {
+    name: "OS Mind",
+    species: "ATTENTION ROUTER",
+    tier: "common",
+    color: "--text-dim",
+    gradient: "linear-gradient(90deg, rgba(230,237,243,0.15), rgba(230,237,243,0.05))",
+    owner: "@apowall",
+    ascii: "  \u25cf \u2192 \u25cb \u2192 \u25cf\n  |       |\n  \u25cb \u2192 \u25cf \u2192 \u25cb\n  context\n  router",
+    description: "1 \u043c\u0438\u043d\u0443\u0442\u0430. \u0420\u0435\u0430\u043b\u044c\u043d\u044b\u0435 \u0437\u0430\u0434\u0430\u0447\u0438 \u0438\u0437 Linear \u0438 Calendar. \u041f\u043e\u0434\u0443\u043c\u0430\u0439 \u043e \u043a\u0430\u0436\u0434\u043e\u0439 \u2014 \u0438 \u043f\u0435\u0440\u0435\u043a\u043b\u044e\u0447\u0438\u0441\u044c. \u041c\u0438\u043a\u0440\u043e-\u043c\u0435\u0434\u0438\u0442\u0430\u0446\u0438\u044f \u0434\u043b\u044f \u0442\u0435\u0445, \u043a\u0442\u043e \u043d\u0435 \u043c\u0435\u0434\u0438\u0442\u0438\u0440\u0443\u0435\u0442.",
+    stats: { vigilance: 0, initiative: 50, context: 60, opinion: 5, persistence: 0, gamification: 20 },
+    tags: [{ text: "on-demand", cls: "blue" }, { text: "1-5 min", cls: "" }, { text: "real tasks", cls: "" }],
+    integrations: ["linear", "terminal"],
+    lastSaid: { action: "*\u0442\u0438\u0445\u0438\u0439 \u0437\u0432\u0443\u043a \u043f\u0435\u0440\u0435\u043a\u043b\u044e\u0447\u0435\u043d\u0438\u044f*", words: "AIM-2455... \u043f\u043e\u0434\u0443\u043c\u0430\u0439 10 \u0441\u0435\u043a\u0443\u043d\u0434... \u043f\u0435\u0440\u0435\u043a\u043b\u044e\u0447\u0430\u0435\u043c\u0441\u044f..." }
+  }
+];
+
+// ═══════════════════════════════════════════
+// RENDERING
+// ═══════════════════════════════════════════
+
+const BUDDY_STATS = ['debugging', 'patience', 'chaos', 'wisdom', 'snark'];
+const COMP_STATS = ['vigilance', 'initiative', 'context', 'opinion', 'persistence', 'gamification'];
+
+function renderBuddyCard(b, i) {
+  const statBars = BUDDY_STATS.map(s => {
+    const v = b.stats[s];
+    const isUnknown = v === null;
+    return `<div class="stat-row">
+      <span class="stat-label">${s.toUpperCase()}</span>
+      <div class="stat-bar-bg"><div class="stat-bar" style="--w:${isUnknown ? 50 : v}%; background: var(${isUnknown ? '--text-muted' : b.color})"></div></div>
+      <span class="stat-value">${isUnknown ? '?' : v}</span>
+    </div>`;
+  }).join('');
+
+  const tags = b.tags.map(t => `<span class="tag">${t}</span>`).join('');
+
+  return `<div class="card" data-delay="${i * 80}" style="--gradient: ${b.gradient}">
+    <div class="card-top">
+      <span class="rarity" style="color:var(${b.color})">\u2605 ${b.rarity}</span>
+      <span style="color:var(--text-muted)">${b.species}</span>
+    </div>
+    <div class="ascii-art"><pre>${b.ascii}</pre></div>
+    <div class="name">${b.name}</div>
+    <div class="owner">${b.owner}${b.env ? ' \u00b7 ' + b.env : ''}</div>
+    <div class="tagline">"${b.description}"</div>
+    <div class="stats">${statBars}</div>
+    ${tags ? `<div class="tags">${tags}</div>` : ''}
+    <div class="speech">
+      ${b.lastSaid.action ? `<span class="action">${b.lastSaid.action}</span><br>` : ''}
+      <span class="words">${b.lastSaid.words}</span>
+    </div>
+  </div>`;
+}
+
+function renderCompanionCard(c, i) {
+  const statBars = COMP_STATS.map(s => {
+    const v = c.stats[s];
+    return `<div class="stat-row">
+      <span class="stat-label">${s.toUpperCase()}</span>
+      <div class="stat-bar-bg"><div class="stat-bar" style="--w:${v}%; background: var(${c.color})"></div></div>
+      <span class="stat-value">${v}</span>
+    </div>`;
+  }).join('');
+
+  const tags = c.tags.map(t => {
+    if (typeof t === 'string') return `<span class="tag">${t}</span>`;
+    return `<span class="tag ${t.cls}">${t.text}</span>`;
+  }).join('');
+
+  return `<div class="card" data-delay="${i * 80}" style="--gradient: ${c.gradient}">
+    <div class="card-top">
+      <span class="rarity" style="color:var(${c.color})">\u2605 ${c.tier}</span>
+      <span style="color:var(--text-muted)">${c.species}</span>
+    </div>
+    <div class="ascii-art"><pre>${c.ascii}</pre></div>
+    <div class="name">${c.name}</div>
+    <div class="owner">${c.owner}</div>
+    <div class="tagline">"${c.description}"</div>
+    <div class="stats">${statBars}</div>
+    <div class="tags">${tags}</div>
+    <div class="speech">
+      ${c.lastSaid.action ? `<span class="action">${c.lastSaid.action}</span><br>` : ''}
+      <span class="words">${c.lastSaid.words}</span>
+    </div>
+  </div>`;
+}
+
+// Mount
+document.getElementById('buddies-grid').innerHTML = BUDDIES.map(renderBuddyCard).join('');
+document.getElementById('companions-grid').innerHTML = COMPANIONS.map(renderCompanionCard).join('');
+
+// Animate on scroll
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const d = parseInt(e.target.dataset.delay) || 0;
+      setTimeout(() => e.target.classList.add('visible'), d);
+    }
+  });
+}, { threshold: 0.05 });
+
+document.querySelectorAll('.card').forEach(c => obs.observe(c));
+
+// Tabs
+function switchTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+  // Re-observe new cards
+  document.querySelectorAll(`#tab-${id} .card`).forEach(c => {
+    c.classList.remove('visible');
+    obs.observe(c);
+  });
+}
+
+// Copy template
+function copyTemplate(type) {
+  const block = event.target.parentElement.querySelector('pre');
+  navigator.clipboard.writeText(block.textContent);
+  event.target.textContent = 'copied!';
+  setTimeout(() => event.target.textContent = 'copy', 1500);
+}
+</script>
+
+</body>
+</html>
