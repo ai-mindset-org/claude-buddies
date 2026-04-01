@@ -450,14 +450,14 @@
   <h1><span>/</span>buddies</h1>
   <p class="subtitle">Community collection of Claude Code companions and custom POS assistants</p>
   <div class="stats-bar">
-    <div class="stat"><strong id="buddy-count">20</strong> buddies</div>
+    <div class="stat"><strong id="buddy-count">21</strong> buddies</div>
     <div class="stat"><strong id="companion-count">8</strong> companions</div>
     <div class="stat"><strong>207</strong> community members</div>
   </div>
 </header>
 
 <div class="tabs">
-  <button class="tab active" onclick="switchTab('buddies')">Claude Buddies <span class="count" id="tab-buddy-count">20</span></button>
+  <button class="tab active" onclick="switchTab('buddies')">Claude Buddies <span class="count" id="tab-buddy-count">21</span></button>
   <button class="tab" onclick="switchTab('companions')">POS Companions <span class="count" id="tab-companion-count">8</span></button>
 </div>
 
@@ -816,6 +816,20 @@ const BUDDIES = [
     stats: { debugging: 46, patience: 86, chaos: 53, wisdom: 35, snark: 54 },
     tags: [],
     lastSaid: { action: "", words: "..." }
+  },
+  {
+    name: "Vellumshell",
+    species: "TURTLE",
+    rarity: "RARE",
+    color: "--accent-purple",
+    gradient: "linear-gradient(90deg, var(--accent-purple), var(--accent-blue))",
+    owner: "@timursotnicov",
+    env: "",
+    ascii: "   \\^^^/\n  -'--'-\n (  o  o )\n/[_______]\\",
+    description: "Watches your bugs spiral with genuine delight before casually pointing out the obvious fix you missed, then vanishes into their shell to muttering about how 'chaos is just order you haven't debugged yet'.",
+    stats: { debugging: 19, patience: 36, chaos: 83, wisdom: 56, snark: 47 },
+    tags: [],
+    lastSaid: { action: "*retreats into shell*", words: "chaos is just order you haven't debugged yet" }
   }
 ];
 
