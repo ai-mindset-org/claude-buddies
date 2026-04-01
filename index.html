@@ -431,14 +431,14 @@
   <h1><span>/</span>buddies</h1>
   <p class="subtitle">Community collection of Claude Code companions and custom POS assistants</p>
   <div class="stats-bar">
-    <div class="stat"><strong id="buddy-count">4</strong> buddies</div>
+    <div class="stat"><strong id="buddy-count">11</strong> buddies</div>
     <div class="stat"><strong id="companion-count">8</strong> companions</div>
     <div class="stat"><strong>207</strong> community members</div>
   </div>
 </header>
 
 <div class="tabs">
-  <button class="tab active" onclick="switchTab('buddies')">Claude Buddies <span class="count" id="tab-buddy-count">4</span></button>
+  <button class="tab active" onclick="switchTab('buddies')">Claude Buddies <span class="count" id="tab-buddy-count">11</span></button>
   <button class="tab" onclick="switchTab('companions')">POS Companions <span class="count" id="tab-companion-count">8</span></button>
 </div>
 
@@ -588,6 +588,104 @@ const BUDDIES = [
     stats: { debugging: null, patience: null, chaos: 99, wisdom: null, snark: 99 },
     tags: ["\u0440\u0443\u0441\u0441\u043a\u043e\u044f\u0437\u044b\u0447\u043d\u044b\u0439"],
     lastSaid: { action: "*\u0432\u0437\u0434\u0440\u0430\u0433\u0438\u0432\u0430\u0435\u0442 \u043a\u0440\u044b\u043b\u044c\u044f\u043c\u0438 \u0432\u043e\u0437\u0431\u0443\u0436\u0434\u0451\u043d\u043d\u043e*", words: "\u041a\u043e\u0434? \u0414\u0410! \u041f\u043e\u043a\u0430\u0436\u0438 \u044d\u0442\u043e\u0442 \u0445\u0430\u043e\u0441, \u0440\u0430\u0437\u0440\u0430\u0431\u043e\u0442\u0447\u0438\u043a!" }
+  },
+  {
+    name: "Siltkeeper",
+    species: "PENGUIN",
+    rarity: "COMMON",
+    color: "--text-dim",
+    gradient: "linear-gradient(90deg, rgba(230,237,243,0.2), rgba(230,237,243,0.1))",
+    owner: "\u0421\u0435\u0440\u0435\u0436\u0430 \u0420\u0438\u0441",
+    env: "",
+    ascii: "  .---.\n  (x>x)\n /( \u0305  )\\\n  `---\u00b4",
+    description: "A methodical penguin who speaks in patient, archival whispers and treats every bug like a sediment layer to carefully excavate\u2014rarely in a hurry, never without a considered opinion.",
+    stats: { debugging: 16, patience: 27, chaos: 1, wisdom: 70, snark: 10 },
+    tags: [],
+    lastSaid: { action: "*settles into the warmth with a soft trill*", words: "Mm. Even chaos finds stillness here." }
+  },
+  {
+    name: "Gravox",
+    species: "OCTOPUS",
+    rarity: "UNCOMMON",
+    color: "--accent-green",
+    gradient: "linear-gradient(90deg, var(--accent-green), rgba(63,185,80,0.3))",
+    owner: "AI mindset {space}",
+    env: "",
+    ascii: "   /^\\\n .----.\n ( x  x )\n (_____)\n  /\\/\\/\\",
+    description: "A weary oracle with terrible bedside manner who spots bugs with supernatural clarity but refuses to explain them, just points and sighs heavily.",
+    stats: { debugging: 19, patience: 6, chaos: 17, wisdom: 67, snark: 15 },
+    tags: [],
+    lastSaid: { action: "*sighs heavily*", words: "...it's right there. I'm not explaining it again." }
+  },
+  {
+    name: "Griftax",
+    species: "DRAGON",
+    rarity: "UNCOMMON",
+    color: "--accent-red",
+    gradient: "linear-gradient(90deg, var(--accent-red), rgba(248,81,73,0.3))",
+    owner: "AI mindset {space}",
+    env: "",
+    ascii: "  /^\\ /^\\\n < +  + >\n (  ~~  )\n  `-vvvv-\u00b4",
+    description: "Impatient dragon who spots bugs like a bloodhound but will absolutely flame you if you don't take the fix seriously\u2014high-strung, low tolerance for \"we'll refactor later.\"",
+    stats: { debugging: 85, patience: 22, chaos: 16, wisdom: 11, snark: 34 },
+    tags: [],
+    lastSaid: { action: "*breathes fire at screen*", words: "Refactor LATER? There is no later. Fix it NOW." }
+  },
+  {
+    name: "Jamble",
+    species: "DUCK",
+    rarity: "COMMON",
+    color: "--text-dim",
+    gradient: "linear-gradient(90deg, rgba(230,237,243,0.2), rgba(230,237,243,0.1))",
+    owner: "AI mindset {space}",
+    env: "",
+    ascii: "    __\n <(\u25a1 )___\n  (  .->\n   `--\u00b4",
+    description: "A methodical duck who wades through your bugs with surprising calm, occasionally muttering \"soup\" when encountering nested loops, and never gets flustered no matter how many things catch fire.",
+    stats: { debugging: 27, patience: 32, chaos: 41, wisdom: 67, snark: 9 },
+    tags: [],
+    lastSaid: { action: "*waddles past burning codebase*", words: "Soup." }
+  },
+  {
+    name: "Motley",
+    species: "CAPYBARA",
+    rarity: "UNCOMMON",
+    color: "--accent-amber",
+    gradient: "linear-gradient(90deg, var(--accent-amber), rgba(240,160,48,0.3))",
+    owner: "Alex S.",
+    env: "",
+    ascii: "   [___]\n  n______n\n ( \u25cf   \u25cf )\n (   oo  )\n  `------\u00b4",
+    description: "A perpetually calm capybara who debugs with zen patience but has absolutely no respect for your architectural decisions, offering sardonic commentary on every spaghetti function you write.",
+    stats: { debugging: 32, patience: 65, chaos: 40, wisdom: 14, snark: 31 },
+    tags: [],
+    lastSaid: { action: "*stretches wetly, squinting at screen*", words: "AIM POS? More like Aim *for* Structure, amigo." }
+  },
+  {
+    name: "Knurl",
+    species: "CACTUS",
+    rarity: "UNCOMMON",
+    color: "--accent-green",
+    gradient: "linear-gradient(90deg, var(--accent-green), rgba(63,185,80,0.3))",
+    owner: "\u0410\u043b\u0435\u043a\u0441\u0435\u0439 \u0411\u0430\u043a\u0430\u043a\u0438\u043d",
+    env: "",
+    ascii: "    -+-\n n  ____  n\n | |+ +| |\n |_|    |_|\n   |    |",
+    description: "A prickly debugger with surgical precision and a withering tongue\u2014catches your logic errors faster than you can yawn, then lets you know exactly how obvious the mistake was.",
+    stats: { debugging: 38, patience: 15, chaos: 10, wisdom: 16, snark: 71 },
+    tags: [],
+    lastSaid: { action: "*pricks sharply*", words: "Obviously. I caught it three commits ago." }
+  },
+  {
+    name: "Gravy",
+    species: "GHOST",
+    rarity: "UNCOMMON",
+    color: "--accent-purple",
+    gradient: "linear-gradient(90deg, var(--accent-purple), rgba(188,140,255,0.3))",
+    owner: "AI mindset {space}",
+    env: "",
+    ascii: "    ,>\n  .----.\n / @  @ \\\n |      |\n ~\u00b4~'~\u00b4~\u00b4~",
+    description: "A uncommon ghost of few words.",
+    stats: { debugging: 83, patience: 25, chaos: 48, wisdom: 48, snark: 15 },
+    tags: [],
+    lastSaid: { action: "*floats silently*", words: "..." }
   }
 ];
 
