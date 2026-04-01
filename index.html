@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Terminal Menagerie — AI Mindset Community</title>
-<meta property="og:title" content="Terminal Menagerie — AI Mindset Community">
+<title>Buddies — AI Mindset Community</title>
+<meta property="og:title" content="Buddies — AI Mindset Community">
 <meta property="og:description" content="Community collection of Claude Code companions and POS assistants. 11 buddies + 8 companions from AI Mindset {space}.">
 <meta property="og:image" content="https://ai-mindset-org.github.io/claude-buddies/assets/preview.png">
 <meta property="og:url" content="https://ai-mindset-org.github.io/claude-buddies/">
@@ -447,7 +447,7 @@
 <header class="site-header">
   <img src="assets/logo-white.png" alt="AI Mindset" style="height:24px; opacity:0.7; margin-bottom:12px">
   <div class="brand">AI Mindset {space}</div>
-  <h1><span>/</span>menagerie</h1>
+  <h1><span>/</span>buddies</h1>
   <p class="subtitle">Community collection of Claude Code companions and custom POS assistants</p>
   <div class="stats-bar">
     <div class="stat"><strong id="buddy-count">11</strong> buddies</div>
@@ -471,61 +471,19 @@
   <div class="grid" id="buddies-grid"></div>
 
   <div class="submit-section">
-    <h3>Add your companion</h3>
-    <p>Upload a /buddy screenshot or fill in manually</p>
+    <h3>add yours</h3>
+    <p>Run <code style="color:var(--accent-teal)">/buddy</code> in Claude Code, screenshot it, paste below</p>
 
-    <!-- File upload area -->
-    <div id="upload-zone" style="border:2px dashed var(--card-border); border-radius:12px; padding:40px; margin:20px auto; max-width:400px; text-align:center; cursor:pointer; transition:border-color 0.3s">
-      <input type="file" id="buddy-file" accept="image/*" capture="environment" style="display:none">
-      <div style="color:var(--text-muted); font-size:12px">
-        Drop screenshot here or tap to upload<br>
-        <span style="font-size:10px; opacity:0.5">Camera / gallery / file</span>
-      </div>
-      <img id="upload-preview" style="max-width:100%; border-radius:8px; margin-top:12px; display:none">
-    </div>
-
-    <!-- Manual form (always visible, pre-fills from image if parsed) -->
-    <div style="max-width:500px; margin:20px auto; text-align:left">
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px">
-        <label style="font-size:10px; color:var(--text-muted)">NAME
-          <input id="f-name" style="width:100%; background:var(--bg); border:1px solid var(--card-border); color:var(--text); padding:6px 8px; border-radius:4px; font-family:inherit; font-size:12px; margin-top:4px" placeholder="Pebble">
-        </label>
-        <label style="font-size:10px; color:var(--text-muted)">SPECIES
-          <input id="f-species" style="width:100%; background:var(--bg); border:1px solid var(--card-border); color:var(--text); padding:6px 8px; border-radius:4px; font-family:inherit; font-size:12px; margin-top:4px" placeholder="SNAIL">
-        </label>
-      </div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px">
-        <label style="font-size:10px; color:var(--text-muted)">RARITY
-          <select id="f-rarity" style="width:100%; background:var(--bg); border:1px solid var(--card-border); color:var(--text); padding:6px 8px; border-radius:4px; font-family:inherit; font-size:12px; margin-top:4px">
-            <option>COMMON</option><option>UNCOMMON</option><option>RARE</option><option>EPIC</option><option>LEGENDARY</option>
-          </select>
-        </label>
-        <label style="font-size:10px; color:var(--text-muted)">YOUR NAME / TG
-          <input id="f-owner" style="width:100%; background:var(--bg); border:1px solid var(--card-border); color:var(--text); padding:6px 8px; border-radius:4px; font-family:inherit; font-size:12px; margin-top:4px" placeholder="@username">
-        </label>
-      </div>
-      <label style="font-size:10px; color:var(--text-muted); display:block; margin-bottom:12px">DESCRIPTION
-        <textarea id="f-desc" rows="2" style="width:100%; background:var(--bg); border:1px solid var(--card-border); color:var(--text); padding:6px 8px; border-radius:4px; font-family:inherit; font-size:12px; margin-top:4px; resize:vertical" placeholder="A methodical snail who..."></textarea>
+    <div style="max-width:400px; margin:20px auto">
+      <label style="font-size:10px; color:var(--text-muted); display:block; margin-bottom:12px">your @telegram or name
+        <input id="f-owner" style="width:100%; background:var(--bg); border:1px solid var(--card-border); color:var(--text); padding:8px 10px; border-radius:6px; font-family:inherit; font-size:13px; margin-top:6px" placeholder="@username">
       </label>
-      <div style="font-size:10px; color:var(--text-muted); margin-bottom:8px">STATS (0-100)</div>
-      <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:6px; margin-bottom:16px">
-        <label style="font-size:9px; color:var(--text-muted); text-align:center">DEBUG<br><input id="f-debug" type="number" min="0" max="100" style="width:100%; background:var(--bg); border:1px solid var(--card-border); color:var(--text); padding:4px; border-radius:4px; font-family:inherit; font-size:11px; text-align:center" value="0"></label>
-        <label style="font-size:9px; color:var(--text-muted); text-align:center">PATIENCE<br><input id="f-patience" type="number" min="0" max="100" style="width:100%; background:var(--bg); border:1px solid var(--card-border); color:var(--text); padding:4px; border-radius:4px; font-family:inherit; font-size:11px; text-align:center" value="0"></label>
-        <label style="font-size:9px; color:var(--text-muted); text-align:center">CHAOS<br><input id="f-chaos" type="number" min="0" max="100" style="width:100%; background:var(--bg); border:1px solid var(--card-border); color:var(--text); padding:4px; border-radius:4px; font-family:inherit; font-size:11px; text-align:center" value="0"></label>
-        <label style="font-size:9px; color:var(--text-muted); text-align:center">WISDOM<br><input id="f-wisdom" type="number" min="0" max="100" style="width:100%; background:var(--bg); border:1px solid var(--card-border); color:var(--text); padding:4px; border-radius:4px; font-family:inherit; font-size:11px; text-align:center" value="0"></label>
-        <label style="font-size:9px; color:var(--text-muted); text-align:center">SNARK<br><input id="f-snark" type="number" min="0" max="100" style="width:100%; background:var(--bg); border:1px solid var(--card-border); color:var(--text); padding:4px; border-radius:4px; font-family:inherit; font-size:11px; text-align:center" value="0"></label>
-      </div>
-      <button id="preview-btn" style="width:100%; padding:10px; background:rgba(77,201,212,0.15); border:1px solid var(--accent-teal); color:var(--accent-teal); border-radius:6px; font-family:inherit; font-size:12px; cursor:pointer; transition:all 0.2s">Preview Card</button>
-    </div>
-
-    <!-- Live preview -->
-    <div id="card-preview" style="max-width:360px; margin:20px auto; display:none"></div>
-
-    <!-- Copy for GitHub Issue -->
-    <div id="copy-section" style="display:none; margin-top:16px; text-align:center">
-      <button id="copy-data-btn" style="padding:8px 20px; background:rgba(77,201,212,0.15); border:1px solid var(--accent-teal); color:var(--accent-teal); border-radius:6px; font-family:inherit; font-size:11px; cursor:pointer">Copy card data for GitHub Issue</button>
-      <div style="font-size:10px; color:var(--text-muted); margin-top:8px">
-        Paste this into a <a href="https://github.com/ai-mindset-org/claude-buddies/issues/new" target="_blank" style="color:var(--accent-teal)">new GitHub Issue</a> to submit
+      <a id="submit-link" href="#" target="_blank" style="display:block; width:100%; padding:12px; background:rgba(77,201,212,0.15); border:1px solid var(--accent-teal); color:var(--accent-teal); border-radius:6px; font-family:inherit; font-size:13px; cursor:pointer; text-align:center; text-decoration:none; transition:all 0.2s">
+        add buddy (paste screenshot on next page)
+      </a>
+      <div style="font-size:10px; color:var(--text-muted); margin-top:10px; text-align:center; line-height:1.6">
+        opens GitHub — paste your /buddy screenshot there<br>
+        AI extracts the data and adds it automatically
       </div>
     </div>
   </div>
@@ -998,136 +956,21 @@ function copyTemplate(type) {
 }
 
 // ═══════════════════════════════════════════
-// BUDDY UPLOAD & FORM
+// SIMPLE SUBMIT — just nickname → GitHub Issue
 // ═══════════════════════════════════════════
 
-// Upload handling — Buddies tab
-const uploadZone = document.getElementById('upload-zone');
-const fileInput = document.getElementById('buddy-file');
-const uploadPreview = document.getElementById('upload-preview');
+const submitLink = document.getElementById('submit-link');
+const ownerInput = document.getElementById('f-owner');
 
-uploadZone.addEventListener('click', () => fileInput.click());
-uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.style.borderColor = 'var(--accent-teal)'; });
-uploadZone.addEventListener('dragleave', () => { uploadZone.style.borderColor = 'var(--card-border)'; });
-uploadZone.addEventListener('drop', e => { e.preventDefault(); uploadZone.style.borderColor = 'var(--card-border)'; if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0], 'upload-preview'); });
-fileInput.addEventListener('change', e => { if(e.target.files[0]) handleFile(e.target.files[0], 'upload-preview'); });
-
-// Upload handling — Companions tab
-const uploadZoneComp = document.getElementById('upload-zone-comp');
-const fileInputComp = document.getElementById('companion-file');
-
-uploadZoneComp.addEventListener('click', () => fileInputComp.click());
-uploadZoneComp.addEventListener('dragover', e => { e.preventDefault(); uploadZoneComp.style.borderColor = 'var(--accent-teal)'; });
-uploadZoneComp.addEventListener('dragleave', () => { uploadZoneComp.style.borderColor = 'var(--card-border)'; });
-uploadZoneComp.addEventListener('drop', e => { e.preventDefault(); uploadZoneComp.style.borderColor = 'var(--card-border)'; if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0], 'upload-preview-comp'); });
-fileInputComp.addEventListener('change', e => { if(e.target.files[0]) handleFile(e.target.files[0], 'upload-preview-comp'); });
-
-function handleFile(file, previewId) {
-  const reader = new FileReader();
-  const preview = document.getElementById(previewId);
-  reader.onload = e => {
-    preview.src = e.target.result;
-    preview.style.display = 'block';
-  };
-  reader.readAsDataURL(file);
+function updateSubmitLink() {
+  const owner = ownerInput.value || 'anonymous';
+  const title = encodeURIComponent('[companion] new buddy from ' + owner);
+  const body = encodeURIComponent('**Owner:** ' + owner + '\n\n**Screenshot:**\n\n(paste your /buddy screenshot here — drag and drop works)\n');
+  submitLink.href = 'https://github.com/ai-mindset-org/claude-buddies/issues/new?labels=companion-submission&title=' + title + '&body=' + body;
 }
 
-// Preview card builder — Buddies
-document.getElementById('preview-btn').addEventListener('click', () => {
-  const data = {
-    name: document.getElementById('f-name').value || 'Unknown',
-    species: document.getElementById('f-species').value || 'UNKNOWN',
-    rarity: document.getElementById('f-rarity').value,
-    owner: document.getElementById('f-owner').value || 'anonymous',
-    description: document.getElementById('f-desc').value || 'A mysterious companion.',
-    stats: {
-      debugging: parseInt(document.getElementById('f-debug').value) || 0,
-      patience: parseInt(document.getElementById('f-patience').value) || 0,
-      chaos: parseInt(document.getElementById('f-chaos').value) || 0,
-      wisdom: parseInt(document.getElementById('f-wisdom').value) || 0,
-      snark: parseInt(document.getElementById('f-snark').value) || 0
-    }
-  };
-
-  const card = {
-    ...data,
-    color: '--accent-teal',
-    gradient: 'linear-gradient(90deg, var(--accent-teal), var(--accent-green))',
-    env: '',
-    ascii: '  ?\n ?_?\n  ?',
-    tags: [],
-    lastSaid: { action: '', words: '...' }
-  };
-
-  const previewEl = document.getElementById('card-preview');
-  previewEl.innerHTML = renderBuddyCard(card, 0);
-  previewEl.style.display = 'block';
-
-  // Show visible immediately
-  setTimeout(() => previewEl.querySelector('.card').classList.add('visible'), 50);
-
-  // Show copy section
-  const copySection = document.getElementById('copy-section');
-  copySection.style.display = 'block';
-
-  // Store data for copy
-  window._lastCardData = data;
-});
-
-document.getElementById('copy-data-btn')?.addEventListener('click', () => {
-  const d = window._lastCardData;
-  const text = `## New Buddy Submission\n\n**Name:** ${d.name}\n**Species:** ${d.species}\n**Rarity:** ${d.rarity}\n**Owner:** ${d.owner}\n**Description:** ${d.description}\n\n### Stats\n| Stat | Value |\n|------|-------|\n| DEBUGGING | ${d.stats.debugging} |\n| PATIENCE | ${d.stats.patience} |\n| CHAOS | ${d.stats.chaos} |\n| WISDOM | ${d.stats.wisdom} |\n| SNARK | ${d.stats.snark} |`;
-  navigator.clipboard.writeText(text);
-  document.getElementById('copy-data-btn').textContent = 'Copied!';
-  setTimeout(() => document.getElementById('copy-data-btn').textContent = 'Copy card data for GitHub Issue', 1500);
-});
-
-// Preview card builder — Companions
-document.getElementById('preview-comp-btn').addEventListener('click', () => {
-  const data = {
-    name: document.getElementById('fc-name').value || 'Unknown',
-    species: document.getElementById('fc-species').value || 'UNKNOWN',
-    tier: document.getElementById('fc-tier').value,
-    owner: document.getElementById('fc-owner').value || 'anonymous',
-    description: document.getElementById('fc-desc').value || 'A mysterious assistant.',
-    stats: {
-      vigilance: parseInt(document.getElementById('fc-vigilance').value) || 0,
-      initiative: parseInt(document.getElementById('fc-initiative').value) || 0,
-      context: parseInt(document.getElementById('fc-context').value) || 0,
-      opinion: parseInt(document.getElementById('fc-opinion').value) || 0,
-      persistence: parseInt(document.getElementById('fc-persistence').value) || 0,
-      gamification: parseInt(document.getElementById('fc-gamification').value) || 0
-    }
-  };
-
-  const card = {
-    ...data,
-    color: '--accent-teal',
-    gradient: 'linear-gradient(90deg, var(--accent-teal), var(--accent-green))',
-    ascii: '  ?\n ?_?\n  ?',
-    tags: [],
-    lastSaid: { action: '', words: '...' }
-  };
-
-  const previewEl = document.getElementById('card-preview-comp');
-  previewEl.innerHTML = renderCompanionCard(card, 0);
-  previewEl.style.display = 'block';
-
-  setTimeout(() => previewEl.querySelector('.card').classList.add('visible'), 50);
-
-  const copySection = document.getElementById('copy-section-comp');
-  copySection.style.display = 'block';
-
-  window._lastCompData = data;
-});
-
-document.getElementById('copy-data-comp-btn')?.addEventListener('click', () => {
-  const d = window._lastCompData;
-  const text = `## New Companion Submission\n\n**Name:** ${d.name}\n**Species:** ${d.species}\n**Tier:** ${d.tier}\n**Owner:** ${d.owner}\n**Description:** ${d.description}\n\n### Stats\n| Stat | Value |\n|------|-------|\n| VIGILANCE | ${d.stats.vigilance} |\n| INITIATIVE | ${d.stats.initiative} |\n| CONTEXT | ${d.stats.context} |\n| OPINION | ${d.stats.opinion} |\n| PERSISTENCE | ${d.stats.persistence} |\n| GAMIFICATION | ${d.stats.gamification} |`;
-  navigator.clipboard.writeText(text);
-  document.getElementById('copy-data-comp-btn').textContent = 'Copied!';
-  setTimeout(() => document.getElementById('copy-data-comp-btn').textContent = 'Copy card data for GitHub Issue', 1500);
-});
+ownerInput.addEventListener('input', updateSubmitLink);
+updateSubmitLink();
 </script>
 
 </body>
