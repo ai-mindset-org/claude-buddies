@@ -431,14 +431,14 @@
   <h1><span>/</span>buddies</h1>
   <p class="subtitle">Community collection of Claude Code companions and custom POS assistants</p>
   <div class="stats-bar">
-    <div class="stat"><strong id="buddy-count">3</strong> buddies</div>
+    <div class="stat"><strong id="buddy-count">4</strong> buddies</div>
     <div class="stat"><strong id="companion-count">8</strong> companions</div>
     <div class="stat"><strong>207</strong> community members</div>
   </div>
 </header>
 
 <div class="tabs">
-  <button class="tab active" onclick="switchTab('buddies')">Claude Buddies <span class="count" id="tab-buddy-count">3</span></button>
+  <button class="tab active" onclick="switchTab('buddies')">Claude Buddies <span class="count" id="tab-buddy-count">4</span></button>
   <button class="tab" onclick="switchTab('companions')">POS Companions <span class="count" id="tab-companion-count">8</span></button>
 </div>
 
@@ -560,6 +560,20 @@ const BUDDIES = [
     stats: { debugging: 1, patience: 32, chaos: 69, wisdom: 28, snark: 9 },
     tags: [],
     lastSaid: { action: "*knocks imaginary ducky off desk*", words: "Blank canvas? How... disappointing." }
+  },
+  {
+    name: "Gnarl",
+    species: "CAT",
+    rarity: "UNCOMMON",
+    color: "--accent-teal",
+    gradient: "linear-gradient(90deg, var(--accent-teal), var(--accent-green))",
+    owner: "AI mindset {space}",
+    env: "unknown",
+    ascii: "   ,>\n  /\\_/\\\n ( @  @)\n ( \u03c9  )\n (\")_(\")",
+    description: "A serene, all-knowing feline who watches your bugs unfold with zen detachment before knocking your variable names off the table just to see what breaks.",
+    stats: { debugging: 17, patience: 22, chaos: 50, wisdom: 90, snark: 10 },
+    tags: [],
+    lastSaid: { action: "*zen stare at screen*", words: "Your variable names... interesting choices. Let me just..." }
   },
   {
     name: "Tremor",
