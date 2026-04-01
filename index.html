@@ -486,9 +486,7 @@
         </div>
       </div>
 
-      <label style="font-size:10px; color:var(--text-muted); display:block; margin-top:12px">your @telegram or name
-        <input id="f-owner" style="width:100%; background:var(--bg); border:1px solid var(--card-border); color:var(--text); padding:8px 10px; border-radius:6px; font-family:inherit; font-size:13px; margin-top:4px" placeholder="@username">
-      </label>
+      <input id="f-owner" style="width:100%; background:var(--bg); border:1px solid var(--card-border); color:var(--text); padding:8px 10px; border-radius:6px; font-family:inherit; font-size:12px; margin-top:12px; text-align:center" placeholder="@telegram (optional)">
     </div>
 
     <!-- Parsed card preview -->
@@ -496,8 +494,8 @@
 
     <!-- One-click submit -->
     <div id="submit-section" style="display:none; text-align:center; margin-top:12px">
-      <button id="submit-btn" style="padding:10px 32px; background:rgba(59,185,80,0.15); border:1px solid var(--accent-green); color:var(--accent-green); border-radius:6px; font-family:inherit; font-size:13px; cursor:pointer; transition:all 0.2s">
-        add to collection
+      <button id="submit-btn" style="padding:12px 40px; background:var(--accent-green); border:none; color:var(--bg); border-radius:6px; font-family:inherit; font-size:14px; font-weight:600; cursor:pointer; transition:all 0.2s; letter-spacing:0.5px">
+        ADD TO COLLECTION
       </button>
       <div id="submit-status" style="font-size:11px; color:var(--text-muted); margin-top:8px"></div>
     </div>
@@ -1010,18 +1008,27 @@ uploadZone.addEventListener('drop', e => {
 });
 fileInput.addEventListener('change', e => { if (e.target.files[0]) processFile(e.target.files[0]); });
 
-// Resize image to fit within Netlify function limit
-function resizeImage(file, maxWidth = 800) {
-  return new Promise((resolve) => {
+// Resize image to fit within Netlify function 1MB limit
+function resizeImage(file, maxWidth = 600) {
+  return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {
-      const canvas = document.createElement('canvas');
-      const scale = Math.min(1, maxWidth / img.width);
-      canvas.width = img.width * scale;
-      canvas.height = img.height * scale;
-      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-      resolve(canvas.toDataURL('image/jpeg', 0.85));
+      try {
+        const canvas = document.createElement('canvas');
+        const scale = Math.min(1, maxWidth / img.width);
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        const ctx = canvas.getContext('2d');
+        // White background (fixes RGBA→JPEG issue)
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+        console.log('Resized to', Math.round(dataUrl.length/1024), 'KB');
+        resolve(dataUrl);
+      } catch(e) { reject(e); }
     };
+    img.onerror = reject;
     img.src = URL.createObjectURL(file);
   });
 }
