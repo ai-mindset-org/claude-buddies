@@ -472,18 +472,35 @@
 
   <div class="submit-section">
     <h3>add yours</h3>
-    <p>Run <code style="color:var(--accent-teal)">/buddy</code> in Claude Code, screenshot it, paste below</p>
+    <p>drop your <code style="color:var(--accent-teal)">/buddy</code> screenshot — AI does the rest</p>
 
-    <div style="max-width:400px; margin:20px auto">
-      <label style="font-size:10px; color:var(--text-muted); display:block; margin-bottom:12px">your @telegram or name
-        <input id="f-owner" style="width:100%; background:var(--bg); border:1px solid var(--card-border); color:var(--text); padding:8px 10px; border-radius:6px; font-family:inherit; font-size:13px; margin-top:6px" placeholder="@username">
+    <div style="max-width:420px; margin:20px auto">
+      <div id="upload-zone" style="border:2px dashed var(--card-border); border-radius:12px; padding:32px; text-align:center; cursor:pointer; transition:border-color 0.3s; position:relative">
+        <input type="file" id="buddy-file" accept="image/*" capture="environment" style="display:none">
+        <div id="upload-label" style="color:var(--text-muted); font-size:13px">
+          drop screenshot or tap to upload
+        </div>
+        <img id="upload-preview" style="max-width:100%; border-radius:8px; margin-top:8px; display:none">
+        <div id="upload-status" style="display:none; margin-top:12px; font-size:12px; color:var(--accent-teal)">
+          extracting data...
+        </div>
+      </div>
+
+      <label style="font-size:10px; color:var(--text-muted); display:block; margin-top:12px">your @telegram or name
+        <input id="f-owner" style="width:100%; background:var(--bg); border:1px solid var(--card-border); color:var(--text); padding:8px 10px; border-radius:6px; font-family:inherit; font-size:13px; margin-top:4px" placeholder="@username">
       </label>
-      <a id="submit-link" href="#" target="_blank" style="display:block; width:100%; padding:12px; background:rgba(77,201,212,0.15); border:1px solid var(--accent-teal); color:var(--accent-teal); border-radius:6px; font-family:inherit; font-size:13px; cursor:pointer; text-align:center; text-decoration:none; transition:all 0.2s">
-        add buddy (paste screenshot on next page)
+    </div>
+
+    <!-- Parsed card preview -->
+    <div id="parsed-card" style="max-width:360px; margin:20px auto; display:none"></div>
+
+    <!-- Submit to GitHub -->
+    <div id="submit-section" style="display:none; text-align:center; margin-top:12px">
+      <a id="submit-link" href="#" target="_blank" style="display:inline-block; padding:10px 24px; background:rgba(77,201,212,0.15); border:1px solid var(--accent-teal); color:var(--accent-teal); border-radius:6px; font-family:inherit; font-size:12px; text-decoration:none; transition:all 0.2s">
+        submit to collection
       </a>
-      <div style="font-size:10px; color:var(--text-muted); margin-top:10px; text-align:center; line-height:1.6">
-        opens GitHub — paste your /buddy screenshot there<br>
-        AI extracts the data and adds it automatically
+      <div style="font-size:10px; color:var(--text-muted); margin-top:8px">
+        opens GitHub Issue — AI will add it automatically
       </div>
     </div>
   </div>
@@ -956,21 +973,88 @@ function copyTemplate(type) {
 }
 
 // ═══════════════════════════════════════════
-// SIMPLE SUBMIT — just nickname → GitHub Issue
+// UPLOAD → VISION API → CARD PREVIEW
 // ═══════════════════════════════════════════
 
+const uploadZone = document.getElementById('upload-zone');
+const fileInput = document.getElementById('buddy-file');
+const uploadPreview = document.getElementById('upload-preview');
+const uploadLabel = document.getElementById('upload-label');
+const uploadStatus = document.getElementById('upload-status');
+const parsedCard = document.getElementById('parsed-card');
+const submitSection = document.getElementById('submit-section');
 const submitLink = document.getElementById('submit-link');
 const ownerInput = document.getElementById('f-owner');
 
-function updateSubmitLink() {
-  const owner = ownerInput.value || 'anonymous';
-  const title = encodeURIComponent('[companion] new buddy from ' + owner);
-  const body = encodeURIComponent('**Owner:** ' + owner + '\n\n**Screenshot:**\n\n(paste your /buddy screenshot here — drag and drop works)\n');
-  submitLink.href = 'https://github.com/ai-mindset-org/claude-buddies/issues/new?labels=companion-submission&title=' + title + '&body=' + body;
-}
+uploadZone.addEventListener('click', () => fileInput.click());
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.style.borderColor = 'var(--accent-teal)'; });
+uploadZone.addEventListener('dragleave', () => { uploadZone.style.borderColor = 'var(--card-border)'; });
+uploadZone.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadZone.style.borderColor = 'var(--card-border)';
+  if (e.dataTransfer.files[0]) processFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change', e => { if (e.target.files[0]) processFile(e.target.files[0]); });
 
-ownerInput.addEventListener('input', updateSubmitLink);
-updateSubmitLink();
+async function processFile(file) {
+  // Show preview
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    const dataUrl = e.target.result;
+    uploadPreview.src = dataUrl;
+    uploadPreview.style.display = 'block';
+    uploadLabel.style.display = 'none';
+    uploadStatus.style.display = 'block';
+    uploadStatus.textContent = 'extracting data...';
+    uploadStatus.style.color = 'var(--accent-teal)';
+
+    try {
+      const res = await fetch('/.netlify/functions/parse-buddy', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: dataUrl })
+      });
+
+      if (!res.ok) throw new Error('API error');
+      const buddy = await res.json();
+
+      if (!buddy.name) throw new Error('Could not parse');
+
+      uploadStatus.textContent = buddy.name + ' (' + buddy.species + ', ' + buddy.rarity + ')';
+      uploadStatus.style.color = 'var(--accent-green)';
+
+      // Render preview card
+      const card = {
+        ...buddy,
+        color: '--accent-teal',
+        gradient: 'linear-gradient(90deg, var(--accent-teal), var(--accent-green))',
+        owner: ownerInput.value || 'anonymous',
+        env: '',
+        ascii: buddy.ascii || '?',
+        tags: [],
+        lastSaid: buddy.lastSaid || { action: '', words: '...' }
+      };
+      parsedCard.innerHTML = renderBuddyCard(card, 0);
+      parsedCard.style.display = 'block';
+      setTimeout(() => parsedCard.querySelector('.card')?.classList.add('visible'), 50);
+
+      // Show submit link
+      const owner = ownerInput.value || 'anonymous';
+      const title = encodeURIComponent('[companion] ' + buddy.name + ' from ' + owner);
+      const body = encodeURIComponent('**Owner:** ' + owner + '\\n**Name:** ' + buddy.name + '\\n**Species:** ' + buddy.species + '\\n**Rarity:** ' + buddy.rarity + '\\n\\n```json\\n' + JSON.stringify(buddy, null, 2) + '\\n```');
+      submitLink.href = 'https://github.com/ai-mindset-org/claude-buddies/issues/new?labels=companion-submission&title=' + title + '&body=' + body;
+      submitSection.style.display = 'block';
+
+      window._parsedBuddy = buddy;
+
+    } catch (err) {
+      uploadStatus.textContent = 'could not parse — try a clearer screenshot';
+      uploadStatus.style.color = 'var(--accent-red)';
+      console.error(err);
+    }
+  };
+  reader.readAsDataURL(file);
+}
 </script>
 
 </body>
