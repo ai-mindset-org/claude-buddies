@@ -65,7 +65,7 @@ exports.handler = async (event) => {
         LEGENDARY: ['--accent-pink', 'linear-gradient(90deg, var(--accent-pink), var(--accent-purple))']
       };
       const [color, gradient] = rarityColors[buddy.rarity] || rarityColors.COMMON;
-      const esc = s => (s || '').replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+      const esc = s => (s || '').replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\r/g, '');
       const ascii = esc(buddy.ascii || '?');
       const desc = esc(buddy.description || '');
       const sAction = esc(buddy.lastSaid?.action || '');
