@@ -450,14 +450,14 @@
   <h1><span>/</span>buddies</h1>
   <p class="subtitle">Community collection of Claude Code companions and custom POS assistants</p>
   <div class="stats-bar">
-    <div class="stat"><strong id="buddy-count">24</strong> buddies</div>
+    <div class="stat"><strong id="buddy-count">25</strong> buddies</div>
     <div class="stat"><strong id="companion-count">8</strong> companions</div>
     <div class="stat"><strong>207</strong> community members</div>
   </div>
 </header>
 
 <div class="tabs">
-  <button class="tab active" onclick="switchTab('buddies')">Claude Buddies <span class="count" id="tab-buddy-count">24</span></button>
+  <button class="tab active" onclick="switchTab('buddies')">Claude Buddies <span class="count" id="tab-buddy-count">25</span></button>
   <button class="tab" onclick="switchTab('companions')">POS Companions <span class="count" id="tab-companion-count">8</span></button>
 </div>
 
@@ -872,6 +872,20 @@ const BUDDIES = [
     stats: { debugging: 21, patience: 70, chaos: 1, wisdom: 33, snark: 19 },
     tags: [],
     lastSaid: { action: "*chime in*", words: "Nuzzle is here - it'll chime in as you code your buddy won't count toward your usage so) its name to get its take: /buddy pet - /buddy off" }
+  },
+  {
+    name: "Flume",
+    species: "DUCK",
+    rarity: "COMMON",
+    color: "--text-dim",
+    gradient: "linear-gradient(90deg, rgba(230,237,243,0.2), rgba(230,237,243,0.1))",
+    owner: "@dolgovalex",
+    env: "",
+    ascii: "    --\n<( + )___\n(   .->\n `--´",
+    description: "A chaotic duck who waddles through your code like a river at flood stage, pointing out bugs with zero patience and maximum confidence despite being hilariously wrong half the time.",
+    stats: { debugging: 23, patience: 6, chaos: 81, wisdom: 5, snark: 16 },
+    tags: [],
+    lastSaid: { action: "*waddles frantically through code*", words: "This bug is DEFINITELY here somewhere! Trust me, I'm almost never wrong!" }
   }
 ];
 
