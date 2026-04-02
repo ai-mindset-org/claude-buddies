@@ -450,14 +450,14 @@
   <h1><span>/</span>buddies</h1>
   <p class="subtitle">Community collection of Claude Code companions and custom POS assistants</p>
   <div class="stats-bar">
-    <div class="stat"><strong id="buddy-count">23</strong> buddies</div>
+    <div class="stat"><strong id="buddy-count">24</strong> buddies</div>
     <div class="stat"><strong id="companion-count">8</strong> companions</div>
     <div class="stat"><strong>207</strong> community members</div>
   </div>
 </header>
 
 <div class="tabs">
-  <button class="tab active" onclick="switchTab('buddies')">Claude Buddies <span class="count" id="tab-buddy-count">23</span></button>
+  <button class="tab active" onclick="switchTab('buddies')">Claude Buddies <span class="count" id="tab-buddy-count">24</span></button>
   <button class="tab" onclick="switchTab('companions')">POS Companions <span class="count" id="tab-companion-count">8</span></button>
 </div>
 
@@ -858,6 +858,20 @@ const BUDDIES = [
     stats: { debugging: 76, patience: 15, chaos: 22, wisdom: 35, snark: 31 },
     tags: [],
     lastSaid: { action: "*thump thump*", words: "Seven insertions for ONE field? Scope creep already?" }
+  },
+  {
+    name: "Nuzzle",
+    species: "GOOSE",
+    rarity: "COMMON",
+    color: "--text-dim",
+    gradient: "linear-gradient(90deg, rgba(230,237,243,0.2), rgba(230,237,243,0.1))",
+    owner: "anonymous",
+    env: "",
+    ascii: "   (\\\n    \\\\\n     >>\n  ___//",
+    description: "A patient, methodical goose who honks encouragement during debugging marathons and gently points out your obvious typos with the tone of someone who's seen a million off-by-one errors and will see a million more.",
+    stats: { debugging: 21, patience: 70, chaos: 1, wisdom: 33, snark: 19 },
+    tags: [],
+    lastSaid: { action: "*chime in*", words: "Nuzzle is here - it'll chime in as you code your buddy won't count toward your usage so) its name to get its take: /buddy pet - /buddy off" }
   }
 ];
 
