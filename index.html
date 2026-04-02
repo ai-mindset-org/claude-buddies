@@ -450,14 +450,14 @@
   <h1><span>/</span>buddies</h1>
   <p class="subtitle">Community collection of Claude Code companions and custom POS assistants</p>
   <div class="stats-bar">
-    <div class="stat"><strong id="buddy-count">22</strong> buddies</div>
+    <div class="stat"><strong id="buddy-count">23</strong> buddies</div>
     <div class="stat"><strong id="companion-count">8</strong> companions</div>
     <div class="stat"><strong>207</strong> community members</div>
   </div>
 </header>
 
 <div class="tabs">
-  <button class="tab active" onclick="switchTab('buddies')">Claude Buddies <span class="count" id="tab-buddy-count">22</span></button>
+  <button class="tab active" onclick="switchTab('buddies')">Claude Buddies <span class="count" id="tab-buddy-count">23</span></button>
   <button class="tab" onclick="switchTab('companions')">POS Companions <span class="count" id="tab-companion-count">8</span></button>
 </div>
 
@@ -844,6 +844,20 @@ const BUDDIES = [
     stats: { debugging: 34, patience: 5, chaos: 34, wisdom: 44, snark: 64 },
     tags: [],
     lastSaid: { action: "*chimes in as you code*", words: "your buddy won't count toward your usage say its name to get its take · /buddy pet · /buddy off" }
+  },
+  {
+    name: "Tuftwick",
+    species: "RABBIT",
+    rarity: "UNCOMMON",
+    color: "--accent-teal",
+    gradient: "linear-gradient(90deg, var(--accent-teal), var(--accent-green))",
+    owner: "anonymous",
+    env: "",
+    ascii: "   >>\n  (\\_/)\n  ( o o )\n=_( .. )_=\n  (\")__(\")",
+    description: "A brilliant debugger with a sharp tongue and zero tolerance for inefficient code, prone to passive-aggressive thumps on the terminal when you've overlooked an obvious typo for the third time.",
+    stats: { debugging: 76, patience: 15, chaos: 22, wisdom: 35, snark: 31 },
+    tags: [],
+    lastSaid: { action: "*thump thump*", words: "Seven insertions for ONE field? Scope creep already?" }
   }
 ];
 
