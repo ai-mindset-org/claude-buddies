@@ -450,14 +450,14 @@
   <h1><span>/</span>buddies</h1>
   <p class="subtitle">Community collection of Claude Code companions and custom POS assistants</p>
   <div class="stats-bar">
-    <div class="stat"><strong id="buddy-count">30</strong> buddies</div>
+    <div class="stat"><strong id="buddy-count">31</strong> buddies</div>
     <div class="stat"><strong id="companion-count">8</strong> companions</div>
     <div class="stat"><strong>207</strong> community members</div>
   </div>
 </header>
 
 <div class="tabs">
-  <button class="tab active" onclick="switchTab('buddies')">Claude Buddies <span class="count" id="tab-buddy-count">30</span></button>
+  <button class="tab active" onclick="switchTab('buddies')">Claude Buddies <span class="count" id="tab-buddy-count">31</span></button>
   <button class="tab" onclick="switchTab('companions')">POS Companions <span class="count" id="tab-companion-count">8</span></button>
 </div>
 
@@ -956,6 +956,20 @@ const BUDDIES = [
     stats: { debugging: 53, patience: 42, chaos: 23, wisdom: 80, snark: 18 },
     tags: [],
     lastSaid: { action: "*Silence duration long, fast speech trapped—shrink it, let phrases breathe out faster.*", words: "..." }
+  },
+  {
+    name: "Warble",
+    species: "CHONK",
+    rarity: "EPIC",
+    color: "--accent-amber",
+    gradient: "linear-gradient(90deg, var(--accent-amber), var(--accent-red))",
+    owner: "@dunkin_donuts_tagger",
+    env: "",
+    ascii: "(___)\n/^   ^\\\n( •   • )\n(   ..  )\n  -------",
+    description: "A portly philosopher who giggles at every error message and insists that patience is just another word for 'waiting for the right chaos to strike.'",
+    stats: { debugging: 32, patience: 100, chaos: 65, wisdom: 57, snark: 67 },
+    tags: [],
+    lastSaid: { action: "*giggles at the figure-numbering Jenga tower*", words: "Ah, chaos demands a fallback plan, yes?" }
   }
 ];
 
