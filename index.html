@@ -450,14 +450,14 @@
   <h1><span>/</span>buddies</h1>
   <p class="subtitle">Community collection of Claude Code companions and custom POS assistants</p>
   <div class="stats-bar">
-    <div class="stat"><strong id="buddy-count">28</strong> buddies</div>
+    <div class="stat"><strong id="buddy-count">29</strong> buddies</div>
     <div class="stat"><strong id="companion-count">8</strong> companions</div>
     <div class="stat"><strong>207</strong> community members</div>
   </div>
 </header>
 
 <div class="tabs">
-  <button class="tab active" onclick="switchTab('buddies')">Claude Buddies <span class="count" id="tab-buddy-count">28</span></button>
+  <button class="tab active" onclick="switchTab('buddies')">Claude Buddies <span class="count" id="tab-buddy-count">29</span></button>
   <button class="tab" onclick="switchTab('companions')">POS Companions <span class="count" id="tab-companion-count">8</span></button>
 </div>
 
@@ -928,6 +928,20 @@ const BUDDIES = [
     stats: { debugging: 39, patience: 9, chaos: 43, wisdom: 81, snark: 33 },
     tags: [],
     lastSaid: { action: "*honks approvingly, then notices the setAnonymous hook doing triple duty*", words: "Visibility toggle now handles backfills. Elegantly fragile." }
+  },
+  {
+    name: "Cobbler",
+    species: "MUSHROOM",
+    rarity: "COMMON",
+    color: "--text-dim",
+    gradient: "linear-gradient(90deg, rgba(230,237,243,0.2), rgba(230,237,243,0.1))",
+    owner: "anonymous",
+    env: "",
+    ascii: "    .-o-oo-o-.\n  (           )\n      | + |\n      |   |",
+    description: "Impatient and caustic, speaks in cutting one-liners while obsessively pointing out every tiny bug you missed-debugs with surgical precision but zero mercy",
+    stats: { debugging: 38, patience: 8, chaos: 7, wisdom: 8, snark: 57 },
+    tags: [],
+    lastSaid: { action: "*cuts corners*", words: "Plan exists. Implementation cuts corners-Ship Service Worker stub?" }
   }
 ];
 
