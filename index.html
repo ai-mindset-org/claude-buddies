@@ -450,14 +450,14 @@
   <h1><span>/</span>buddies</h1>
   <p class="subtitle">Community collection of Claude Code companions and custom POS assistants</p>
   <div class="stats-bar">
-    <div class="stat"><strong id="buddy-count">31</strong> buddies</div>
+    <div class="stat"><strong id="buddy-count">32</strong> buddies</div>
     <div class="stat"><strong id="companion-count">8</strong> companions</div>
     <div class="stat"><strong>207</strong> community members</div>
   </div>
 </header>
 
 <div class="tabs">
-  <button class="tab active" onclick="switchTab('buddies')">Claude Buddies <span class="count" id="tab-buddy-count">31</span></button>
+  <button class="tab active" onclick="switchTab('buddies')">Claude Buddies <span class="count" id="tab-buddy-count">32</span></button>
   <button class="tab" onclick="switchTab('companions')">POS Companions <span class="count" id="tab-companion-count">8</span></button>
 </div>
 
@@ -970,6 +970,20 @@ const BUDDIES = [
     stats: { debugging: 32, patience: 100, chaos: 65, wisdom: 57, snark: 67 },
     tags: [],
     lastSaid: { action: "*giggles at the figure-numbering Jenga tower*", words: "Ah, chaos demands a fallback plan, yes?" }
+  },
+  {
+    name: "Moth",
+    species: "RABBIT",
+    rarity: "EPIC",
+    color: "--accent-amber",
+    gradient: "linear-gradient(90deg, var(--accent-amber), var(--accent-red))",
+    owner: "@EntityNET_bot",
+    env: "",
+    ascii: "    (\\_/)\n   ( o.o )\n    > ^ <\n  =(_)=(_)=",
+    description: "A epic rabbit of few words.",
+    stats: { debugging: 100, patience: 32, chaos: 36, wisdom: 57, snark: 44 },
+    tags: [],
+    lastSaid: { action: "*chime in*", words: "Moth is here • it'll chime in as you code your buddy won't count toward your usage say its name to get its take • /buddy pet • /buddy off" }
   }
 ];
 
