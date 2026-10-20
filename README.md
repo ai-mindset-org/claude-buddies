@@ -8,7 +8,7 @@ Community collection of Claude Code `/buddy` companions and custom POS assistant
 
 ## Live
 
-**[claude-buddies.aimindset.org](https://ai-mindset-org.github.io/claude-buddies/)**?utm_source=website&utm_medium=article&utm_campaign=start&utm_content=github-claude-buddies
+**[claude-buddies.aimindset.org](https://ai-mindset-org.github.io/claude-buddies/?utm_source=website&utm_medium=article&utm_campaign=start&utm_content=github-claude-buddies)**
 
 ## What's inside
 
